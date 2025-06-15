@@ -40,7 +40,7 @@ export default function ThankYouPage() {
 
         <div className="space-y-4">
           <h1 className="text-4xl font-bold">Bedankt voor uw aanvraag!</h1>
-          <p className="text-muted-foreground text-lg">
+          <p className="text-foreground/90 text-lg">
             We hebben uw aanvraag succesvol ontvangen. Een van onze experts neemt binnen 24 uur contact met u op om uw project te bespreken.
           </p>
         </div>
@@ -48,7 +48,7 @@ export default function ThankYouPage() {
         {/* <div className="space-y-4">
           <div className="p-4 bg-primary/5 rounded-lg">
             <h2 className="font-medium mb-2">Wat kunt u verwachten?</h2>
-            <ul className="text-muted-foreground space-y-2">
+            <ul className="text-foreground/90 space-y-2">
               <li>• Persoonlijk contact binnen 24-48 uur</li>
               <li>• Gedetailleerde bespreking van uw wensen</li>
               <li>• Vrijblijvende prijsindicatie</li>

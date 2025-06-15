@@ -36,11 +36,11 @@ export function AboutSection() {
               <div className="grid grid-cols-2 gap-6">
                 <div>
                   <div className="text-3xl font-bold text-primary">€85/m²</div>
-                  <div className="text-sm text-muted-foreground">Prijs per m²</div>
+                  <div className="text-sm text-foreground/90">Prijs per m²</div>
                 </div>
                 <div>
                   <div className="text-3xl font-bold text-primary">10+</div>
-                  <div className="text-sm text-muted-foreground">Jaren ervaring</div>
+                  <div className="text-sm text-foreground/90">Jaren ervaring</div>
                 </div>
               </div>
             </div> */}
@@ -58,7 +58,7 @@ export function AboutSection() {
             <h2 className="text-4xl font-bold mb-8">Over ons</h2>
             
 
-            <div className="space-y-6 text-muted-foreground">
+            <div className="space-y-6 text-foreground/90">
               <p>
               Duradomi is een gespecialiseerd verduurzamingsbedrijf dat zich richt op het energiezuiniger maken van woningen en bedrijfspanden in heel de randstad. Als expert in duurzame woningverbetering hebben we ruime ervaring in de verduurzamingsbranche.
               </p>
@@ -87,7 +87,7 @@ export function AboutSection() {
               {/* <div className="text-xl font-semibold mb-2">
               Totale woningverduurzaming vanaf  €85/m²
               </div> */}
-              <p className="text-muted-foreground mb-4">
+              <p className="text-foreground/90 mb-4">
                 Bespaar direct op uw energierekening!
               </p>
               <Link href="#contact">

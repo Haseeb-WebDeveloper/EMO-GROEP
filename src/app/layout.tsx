@@ -1,10 +1,17 @@
 import type { Metadata } from "next";
-import { GeistSans } from "geist/font/sans";
+import { DM_Sans } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { ContactPopupProvider } from "@/components/providers/contact-popup-provider";
+
+
+const dmSans = DM_Sans({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
+  variable: "--font-dm-sans",
+});
 
 export const metadata: Metadata = {
   title: "Sustainable Energy Labels. Practical Advice. Smarter Homes.",
@@ -24,7 +31,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={GeistSans.className}>
+    <html lang="en" className={`${dmSans.variable} body`}>
       <head>
         <meta
           name="google-site-verification"

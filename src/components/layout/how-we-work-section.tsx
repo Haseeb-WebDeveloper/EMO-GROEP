@@ -60,7 +60,7 @@ export function HowWeWorkSection() {
           className="text-center max-w-3xl mx-auto mb-12"
         >
           <h2 className="text-4xl font-bold mb-6">Onze Werkwijze</h2>
-          <p className="text-muted-foreground text-lg">
+          <p className="text-foreground/90 text-lg">
           Bij Duradomi staat kwaliteit en efficiëntie voorop. Als specialist in woningverbetering en verduurzaming bieden wij een all-in-one oplossing waarbij we het hele proces van A tot Z verzorgen</p>
         </motion.div>
 
@@ -87,7 +87,7 @@ export function HowWeWorkSection() {
                     {step.icon}
                   </div>
                   <h3 className="text-xl font-semibold mb-4">{step.title}</h3>
-                  <p className="text-muted-foreground">{step.description}</p>
+                  <p className="text-foreground/90">{step.description}</p>
                 </div>
 
                 {/* Hover effect */}

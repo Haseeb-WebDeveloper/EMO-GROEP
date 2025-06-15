@@ -679,7 +679,7 @@ export function ContactSection() {
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.3, delay: index * 0.1 }}
-                    className="flex items-center gap-3 text-muted-foreground"
+                    className="flex items-center gap-3 text-foreground/90"
                   >
                     <svg
                       className="w-5 h-5 text-primary flex-shrink-0"
@@ -721,7 +721,7 @@ export function ContactSection() {
                 <div>
                   <Link href="tel:+31850604466">
                     <h3 className="font-semibold mb-1">Telefoon</h3>
-                    <p className="text-muted-foreground">+31850604466</p>
+                    <p className="text-foreground/90">+31850604466</p>
                   </Link>
                 </div>
               </div>
@@ -746,7 +746,7 @@ export function ContactSection() {
                 <div>
                   <Link href="mailto:info@renodomi.nl">
                     <h3 className="font-semibold mb-1">Email</h3>
-                    <p className="text-muted-foreground">info@renodomi.nl</p>
+                    <p className="text-foreground/90">info@renodomi.nl</p>
                   </Link>
                 </div>
               </div>

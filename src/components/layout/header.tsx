@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useContactPopup } from "@/components/providers/contact-popup-provider";
+import { Menu, X } from "lucide-react";
 
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -66,16 +67,31 @@ export function Header() {
     }
   };
 
+
+  const navItems = [
+    {
+      label: "renodomi",
+      href: "https://renodomi.nl/",
+    },
+    {
+      label: "duradomi",
+      href: "https://duradomi.nl/",
+    },
+    {
+      label: "over ons",
+      href: "#about",
+    },
+  ];
+
   return (
     <motion.header
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.5 }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled || isMobileMenuOpen
-          ? "bg-background/80 backdrop-blur-lg shadow-sm"
-          : "bg-transparent"
-      }`}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled || isMobileMenuOpen
+        ? "bg-background/80 backdrop-blur-lg shadow-sm"
+        : "bg-transparent"
+        }`}
     >
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
@@ -89,50 +105,23 @@ export function Header() {
               className="w-10 h-10"
             />
             <h1 className="text-2xl font-bold text-primary hover:text-primary/90 transition-colors">
-              duradomi
+              EMW Groep
             </h1>
           </Link>
 
           {/* Desktop Navigation */}
 
-          <nav className="hidden md:flex items-center gap-0">
-            <Link
-              href="https://renodomi.nl/"
-              className={`relative group text-lg font-semibold pr-6 `}
-            >
-              renodomi
-            </Link>
-            <Link
-              href="https://duradomi.nl/"
-              className={`relative group text-lg font-semibold pr-6 bg-foreground/5 px-4 py-1 `}
-            >
-              duradomi
-            </Link>
-            <Link
-              href="#about"
-              className={`relative group text-lg font-light pr-6 bg-foreground/5 px-4 py-1 `}
-            >
-              over ons
-            </Link>
-            <Link
-              href="#services"
-              className={`relative group text-lg font-light pr-6 bg-foreground/5 px-4 py-1 `}
-            >
-              diensten
-            </Link>
-            <a
-              className="relative group text-lg  font-light cursor-pointer bg-foreground/5 px-4 mr-4 py-1  rounded-none"
-              onClick={openContactPopup}
-            >
-              aan de slag
-            </a>
-            <Link
-              href="https://isodomi.nl/"
-              className={`relative group text-lg font-semibold pr-6 `}
-            >
-              isodomi
-            </Link>
-          </nav>
+          {/* <nav className="hidden md:flex items-center gap-0">
+            {navItems.map((item) => (
+              <Link
+                key={item.label}
+                href={item.href}
+                className={`relative group text-lg font-semibold pr-6 bg-foreground/5 px-4 py-1 `}
+              >
+                {item.label}
+              </Link>
+            ))}
+          </nav> */}
 
           {/* CTA Button & Mobile Menu Button */}
           <div className="flex items-center gap-4">
@@ -140,7 +129,7 @@ export function Header() {
               className="hidden md:inline-flex px-8 py-4"
               onClick={openContactPopup}
             >
-              aan de slag
+              Get Your Energy
             </Button>
 
             {/* Mobile Menu Button */}
@@ -149,24 +138,7 @@ export function Header() {
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               aria-label="Toggle menu"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className={`transition-transform duration-300 ${
-                  isMobileMenuOpen ? "rotate-90" : ""
-                }`}
-              >
-                <line x1="3" y1="12" x2="21" y2="12" />
-                <line x1="3" y1="6" x2="21" y2="6" />
-                <line x1="3" y1="18" x2="21" y2="18" />
-              </svg>
+              {!isMobileMenuOpen ? <Menu className="h-10 w-10" /> : <X className="h-10 w-10" />}
             </button>
           </div>
         </div>
@@ -179,58 +151,23 @@ export function Header() {
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3 }}
-              className="md:hidden border-t border-primary/10"
+              className="md:hidden border-t border-primary/10 min-h-[93dvh] pb-12 flex flex-col justify-between"
             >
-              <div className="py-4 space-y-4">
-                <Link
-                  href="https://renodomi.nl/"
-                  onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                  className="block px-4 py-2 text-sm hover:bg-accent rounded-md transition-colors"
-                >
-                  renodomi
-                </Link>
-                <Link
-                  href="https://isodomi.nl/"
-                  onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                  className="block px-4 py-2 text-sm hover:bg-accent rounded-md transition-colors"
-                >
-                  isodomi
-                </Link>
-                <div className="block px-4 py-2 text-sm hover:bg-accent rounded-md transition-colors">
+              <div className="py-12 space-y-8">
+                {/* {navItems.map((item) => (
                   <Link
-                    href="https://duradomi.nl/"
-                    onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                    key={item.label}
+                    href={item.href}
+                    className="block text-xl text-center"
                   >
-                    duradomi
+                    {item.label}
                   </Link>
-                  <div className="pl-4 mt-2 space-y-2">
-                    <Link
-                      href="#about"
-                      onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                      className="block px-4 py-2 text-sm hover:bg-accent rounded-md transition-colors"
-                    >
-                      over ons
-                    </Link>
-                    <Link
-                      href="#services"
-                      onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                      className="block px-4 py-2 text-sm hover:bg-accent rounded-md transition-colors"
-                    >
-                      diensten
-                    </Link>
-                    <a
-                      className="block px-4 py-2 text-sm hover:bg-accent rounded-md transition-colors cursor-pointer"
-                      onClick={openContactPopup}
-                    >
-                      aan de slag
-                    </a>
-                  </div>
-                </div>
-                <div className="px-4 pt-2">
-                  <Button onClick={openContactPopup} className="w-full">
-                    aan de slag
-                  </Button>
-                </div>
+                ))} */}
+              </div>
+              <div className="px-4 pt-2">
+                <Button onClick={openContactPopup} className="w-full">
+                  Get Your Energy
+                </Button>
               </div>
             </motion.div>
           )}
