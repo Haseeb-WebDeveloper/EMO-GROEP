@@ -719,9 +719,9 @@ export function ContactSection() {
                   </svg>
                 </div>
                 <div>
-                  <Link href="tel:+31850604466">
+                  <Link href="tel:+31647198116">
                     <h3 className="font-semibold mb-1">Telefoon</h3>
-                    <p className="text-foreground/90">+31850604466</p>
+                    <p className="text-foreground/90">+31647198116</p>
                   </Link>
                 </div>
               </div>
@@ -744,9 +744,9 @@ export function ContactSection() {
                   </svg>
                 </div>
                 <div>
-                  <Link href="mailto:info@renodomi.nl">
+                  <Link href="mailto:rico@emw-groep.nl">
                     <h3 className="font-semibold mb-1">Email</h3>
-                    <p className="text-foreground/90">info@renodomi.nl</p>
+                    <p className="text-foreground/90">rico@emw-groep.nl</p>
                   </Link>
                 </div>
               </div>

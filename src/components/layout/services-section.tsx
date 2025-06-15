@@ -9,25 +9,25 @@ const services = [
   {
     title: "Energy Label for Homes",
     paragraph: "Fast, compliant energy label reporting — ideal for sale or rental.",
-    image: "/isolatie.jpg",
+    image: "/Energy-Label.avif",
     link: "https://isodomi.nl/"
   },
   {
     title: "NEN 2580 Measurement",
     paragraph: "Precise living area measurement by certified assessors.",
-    image: "/Ventilatie.jpg",
+    image: "/NEN-2580-Measurement.avif",
     link: "#contact"
   },
   {
     title: "WWS Point Analysis",
     paragraph: "Transparent scoring for subsidies, tax breaks, and grants.",
-    image: "/Energysystemen.avif",
+    image: "/WWS-Point-Analysis.avif",
     link: "#contact"
   },
   {
     title: "Sustainability Advice",
     paragraph: "Smart, practical solutions to upgrade insulation, tech, and energy use — made for your budget.",
-    image: "/glass.jpg",
+    image: "/Sustainability-Advice.avif",
     link: "#contact"
   }
 ];
@@ -64,12 +64,13 @@ export function ServicesSection() {
               <div className="relative bg-background/50 backdrop-blur-sm rounded-2xl border overflow-hidden border-border h-full flex flex-col justify-between">
                 <div>
                   {/* Image */}
-                  <div className="relative h-48 overflow-hidden">
+                  <div className="relative h-44 aspect-video overflow-hidden">
                     <Image
                       src={service.image}
                       alt={service.title}
-                      fill
-                      className="object-cover transition-transform duration-500 group-hover:scale-110"
+                      width={500}
+                      height={500}
+                      className="object-cover aspect-video transition-transform duration-500 group-hover:scale-110"
                     />
                   </div>
 

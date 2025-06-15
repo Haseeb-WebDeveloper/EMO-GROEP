@@ -25,7 +25,7 @@ export function Footer() {
 
           {/* Company Info */}
           <div className="text-foreground/90 space-y-2">
-            <p>© 2025 Renodomi | KvK 94082286 | BTW NL866629191B01</p>
+            <p>© 2025 Rico Borst EMW adviseur</p>
           </div>
           <div className="text-foreground/90">
             <p>Developed by
