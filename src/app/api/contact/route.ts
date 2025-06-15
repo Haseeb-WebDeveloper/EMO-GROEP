@@ -1,125 +1,73 @@
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 
-interface ServiceType {
-  id: string;
-  label: string;
-}
-
-interface ServiceConfig {
-  [key: string]: {
-    label: string;
-    subServices: ServiceType[];
-  };
-}
-
-interface FormServices {
-  isolatie: boolean;
-  isolatieType: {
-    gevelisolatie: boolean;
-    dakisolatie: boolean;
-    vloerisolatie: boolean;
-  };
-  ventilatie: boolean;
-  ventilatieType: {
-    wtwSystemen: boolean;
-    mechanischeVentilatie: boolean;
-  };
-  energiesystemen: boolean;
-  energieType: {
-    warmtepompen: boolean;
-    hrKetels: boolean;
-  };
-  glasisolatie: boolean;
-  glasType: {
-    hrPlusPlus: boolean;
-    tripleGlas: boolean;
-  };
-  [key: string]: boolean | Record<string, boolean>;
-}
-
 interface FormData {
-  services: FormServices;
-  street: string;
-  number: string;
-  postalCode: string;
+  // Step 1 - Service Selection
+  serviceTypes: {
+    energielabel: boolean;
+    nen2580: boolean;
+    wwsPunten: boolean;
+    duurzaamheidsadvies: boolean;
+    isolatieadvies: boolean;
+    verkoopklaar: boolean;
+  };
+  
+  // Step 2 - Property Details
+  address: string;
   houseType: string;
+  surfaceArea: string;
+  constructionYear: string;
+  recentlyRenovated: "ja" | "nee" | "";
+  
+  // Step 3 - Property Condition
+  insulationDetails: string;
+  sustainableInstallations: string;
+  
+  // Step 4 - Project Details
+  purpose: "verkoop" | "verhuur" | "";
+  subsidyRequest: "ja" | "nee" | "";
+  deadline: "standaard" | "spoed" | "";
+  
+  // Step 5 - Personal Information
   firstName: string;
   lastName: string;
   email: string;
   phone: string;
-  additionalInfo: string;
+  preferredContactTime: string;
+  additionalDocuments?: FileList;
 }
 
-const serviceConfig: ServiceConfig = {
-  isolatie: {
-    label: "Isolatie",
-    subServices: [
-      { id: "gevelisolatie", label: "Gevelisolatie" },
-      { id: "dakisolatie", label: "Dakisolatie" },
-      { id: "vloerisolatie", label: "Vloerisolatie" },
-    ],
-  },
-  ventilatie: {
-    label: "Ventilatie",
-    subServices: [
-      { id: "wtwSystemen", label: "WTW-systemen" },
-      { id: "mechanischeVentilatie", label: "Mechanische ventilatie" },
-    ],
-  },
-  energiesystemen: {
-    label: "Energiesystemen",
-    subServices: [
-      { id: "warmtepompen", label: "Warmtepompen" },
-      { id: "hrKetels", label: "HR-ketels" },
-    ],
-  },
-  glasisolatie: {
-    label: "Glasisolatie",
-    subServices: [
-      { id: "hrPlusPlus", label: "HR++ glas" },
-      { id: "tripleGlas", label: "Triple glas" },
-    ],
-  },
-};
+const serviceConfig = {
+  energielabel: { label: "Energielabel voor woning" },
+  nen2580: { label: "NEN 2580 meetrapport" },
+  wwsPunten: { label: "WWS puntentelling" },
+  duurzaamheidsadvies: { label: "Duurzaamheidsadvies voor woning" },
+  isolatieadvies: { label: "Isolatieadvies" },
+  verkoopklaar: { label: "Verkoopklaar maken woning" },
+} as const;
 
 export async function POST(req: Request) {
   try {
     const data: FormData = await req.json();
     console.log(data);
-    // Validate required  fields
+
+    // Validate required fields
     if (!data.firstName || !data.lastName || !data.email || !data.phone) {
       return NextResponse.json(
         { error: "Required fields are missing" },
-        { status: 400 } 
+        { status: 400 }
       );
     }
 
-    // Format selected services for email with type safety
-    const formatSelectedServices = (services: FormServices): string => {
-      const result: string[] = [];
-      
-      Object.entries(serviceConfig).forEach(([serviceKey, serviceData]) => {
-        if (services[serviceKey as keyof FormServices]) {
-          const typeKey = `${serviceKey}Type` as keyof FormServices;
-          const subServiceType = services[typeKey] as Record<string, boolean>;
-          
-          const subServices = serviceData.subServices
-            .filter(sub => subServiceType[sub.id])
-            .map(sub => sub.label);
-          
-          if (subServices.length > 0) {
-            result.push(`${serviceData.label}: ${subServices.join(', ')}`);
-          } else {
-            result.push(serviceData.label);
-          }
-        }
-      });
-      
-      return result.join('\n');
+    // Format selected services for email
+    const formatSelectedServices = (services: FormData['serviceTypes']): string => {
+      return Object.entries(services)
+        .filter(([_, isSelected]) => isSelected)
+        .map(([key]) => serviceConfig[key as keyof typeof serviceConfig].label)
+        .join('\n');
     };
 
-    const selectedServices = formatSelectedServices(data.services);
+    const selectedServices = formatSelectedServices(data.serviceTypes);
 
     // Create email transporter
     const transporter = nodemailer.createTransport({
@@ -147,11 +95,25 @@ export async function POST(req: Request) {
           </div>
 
           <div style="margin: 20px 0; padding: 15px; background: #f9f9f9; border-radius: 5px;">
-            <h3 style="color: #666; margin-top: 0;">Adresgegevens:</h3>
-            <p>Straat: ${data.street}</p>
-            <p>Nummer: ${data.number}</p>
-            <p>Postcode: ${data.postalCode}</p>
+            <h3 style="color: #666; margin-top: 0;">Gegevens van de woning:</h3>
+            <p>Adres: ${data.address}</p>
             <p>Type woning: ${data.houseType}</p>
+            <p>Oppervlakte: ${data.surfaceArea} m²</p>
+            <p>Bouwjaar: ${data.constructionYear}</p>
+            <p>Recent gerenoveerd: ${data.recentlyRenovated}</p>
+          </div>
+
+          <div style="margin: 20px 0; padding: 15px; background: #f9f9f9; border-radius: 5px;">
+            <h3 style="color: #666; margin-top: 0;">Huidige staat van de woning:</h3>
+            <p>Isolatie details: ${data.insulationDetails}</p>
+            <p>Duurzame installaties: ${data.sustainableInstallations}</p>
+          </div>
+
+          <div style="margin: 20px 0; padding: 15px; background: #f9f9f9; border-radius: 5px;">
+            <h3 style="color: #666; margin-top: 0;">Project details:</h3>
+            <p>Doel: ${data.purpose}</p>
+            <p>Subsidie aanvraag: ${data.subsidyRequest}</p>
+            <p>Deadline: ${data.deadline}</p>
           </div>
 
           <div style="margin: 20px 0; padding: 15px; background: #f9f9f9; border-radius: 5px;">
@@ -159,14 +121,8 @@ export async function POST(req: Request) {
             <p>Naam: ${data.firstName} ${data.lastName}</p>
             <p>Email: ${data.email}</p>
             <p>Telefoon: ${data.phone}</p>
+            <p>Voorkeurstijd voor contact: ${data.preferredContactTime}</p>
           </div>
-
-          ${data.additionalInfo ? `
-            <div style="margin: 20px 0; padding: 15px; background: #f9f9f9; border-radius: 5px;">
-              <h3 style="color: #666; margin-top: 0;">Aanvullende informatie:</h3>
-              <p style="margin-bottom: 0;">${data.additionalInfo}</p>
-            </div>
-          ` : ''}
         </div>
       `
     };
@@ -178,14 +134,14 @@ export async function POST(req: Request) {
     const autoReplyOptions = {
       from: process.env.SENDER_EMAIL,
       to: data.email,
-      subject: "Bedankt voor uw aanvraag - Duradomi",
+      subject: "Bedankt voor uw aanvraag - EMW Groep",
       html: `
         <div style="font-family: Arial, sans-serif; padding: 20px; max-width: 600px; margin: 0 auto;">
           <h2 style="color: #333;">Bedankt voor uw aanvraag</h2>
           
           <p>Beste ${data.firstName},</p>
           
-          <p>Bedankt voor uw interesse in onze isolatiediensten. We hebben uw aanvraag ontvangen en zullen deze zo spoedig mogelijk behandelen.</p>
+          <p>Bedankt voor uw interesse in onze diensten. We hebben uw aanvraag ontvangen en zullen deze zo spoedig mogelijk behandelen.</p>
           
           <div style="margin: 20px 0; padding: 15px; background: #f9f9f9; border-radius: 5px;">
             <h3 style="color: #666; margin-top: 0;">Uw aanvraag betreft:</h3>
@@ -194,7 +150,7 @@ export async function POST(req: Request) {
           
           <p>We nemen binnen 24-48 uur contact met u op om uw aanvraag te bespreken.</p>
           
-          <p>Met vriendelijke groet,<br>Team Duradomi</p>
+          <p>Met vriendelijke groet,<br>Team EMW Groep</p>
         </div>
       `
     };

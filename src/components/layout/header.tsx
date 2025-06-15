@@ -70,16 +70,12 @@ export function Header() {
 
   const navItems = [
     {
-      label: "renodomi",
-      href: "https://renodomi.nl/",
+      label: "Services",
+      href: "#services",
     },
     {
-      label: "duradomi",
-      href: "https://duradomi.nl/",
-    },
-    {
-      label: "over ons",
-      href: "#about",
+      label: "FAQ",
+      href: "#faq",
     },
   ];
 
@@ -111,7 +107,7 @@ export function Header() {
 
           {/* Desktop Navigation */}
 
-          {/* <nav className="hidden md:flex items-center gap-0">
+          <nav className="hidden md:flex items-center gap-0">
             {navItems.map((item) => (
               <Link
                 key={item.label}
@@ -121,15 +117,16 @@ export function Header() {
                 {item.label}
               </Link>
             ))}
-          </nav> */}
+          </nav>
 
           {/* CTA Button & Mobile Menu Button */}
           <div className="flex items-center gap-4">
             <Button
-              className="hidden md:inline-flex px-8 py-4"
+              variant="secondary"
+              className="hidden md:inline-flex px-8 py-5"
               onClick={openContactPopup}
             >
-              Get Your Energy
+              Vraag direct een offerte aan
             </Button>
 
             {/* Mobile Menu Button */}
@@ -154,7 +151,7 @@ export function Header() {
               className="md:hidden border-t border-primary/10 min-h-[93dvh] pb-12 flex flex-col justify-between"
             >
               <div className="py-12 space-y-8">
-                {/* {navItems.map((item) => (
+                {navItems.map((item) => (
                   <Link
                     key={item.label}
                     href={item.href}
@@ -162,11 +159,11 @@ export function Header() {
                   >
                     {item.label}
                   </Link>
-                ))} */}
+                ))}
               </div>
               <div className="px-4 pt-2">
-                <Button onClick={openContactPopup} className="w-full">
-                  Get Your Energy
+                <Button onClick={openContactPopup} className="w-full py-6">
+                  Vraag direct een offerte aan
                 </Button>
               </div>
             </motion.div>

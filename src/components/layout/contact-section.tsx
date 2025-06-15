@@ -47,72 +47,87 @@ interface FormServices {
 }
 
 interface FormData {
-  services: FormServices;
-  // Step 2
-  street: string;
-  number: string;
-  postalCode: string;
-  houseType:
-    | "hoekwoning"
-    | "tussenwoning"
-    | "vrijstaande"
-    | "twee-onder-een-kap"
-    | "";
-  // Step 3
+  // Step 1 - Service Selection
+  serviceTypes: {
+    energielabel: boolean;
+    nen2580: boolean;
+    wwsPunten: boolean;
+    duurzaamheidsadvies: boolean;
+    isolatieadvies: boolean;
+    verkoopklaar: boolean;
+  };
+  
+  // Step 2 - Property Details
+  address: string;
+  houseType: string;
+  surfaceArea: string;
+  constructionYear: string;
+  recentlyRenovated: "ja" | "nee" | "";
+  
+  // Step 3 - Property Condition
+  insulationDetails: string;
+  sustainableInstallations: string;
+  
+  // Step 4 - Project Details
+  purpose: "verkoop" | "verhuur" | "";
+  subsidyRequest: "ja" | "nee" | "";
+  deadline: "standaard" | "spoed" | "";
+  
+  // Step 5 - Personal Information
   firstName: string;
   lastName: string;
   email: string;
   phone: string;
-  additionalInfo: string;
+  preferredContactTime: string;
+  additionalDocuments?: FileList;
 }
 
 const initialFormData: FormData = {
-  services: {
-    isolatie: false,
-    isolatieType: {
-      gevelisolatie: false,
-      dakisolatie: false,
-      vloerisolatie: false,
-    },
-    ventilatie: false,
-    ventilatieType: {
-      wtwSystemen: false,
-      mechanischeVentilatie: false,
-    },
-    energiesystemen: false,
-    energieType: {
-      warmtepompen: false,
-      hrKetels: false,
-    },
-    glasisolatie: false,
-    glasType: {
-      hrPlusPlus: false,
-      tripleGlas: false,
-    },
+  serviceTypes: {
+    energielabel: false,
+    nen2580: false,
+    wwsPunten: false,
+    duurzaamheidsadvies: false,
+    isolatieadvies: false,
+    verkoopklaar: false,
   },
-  street: "",
-  number: "",
-  postalCode: "",
+  address: "",
   houseType: "",
+  surfaceArea: "",
+  constructionYear: "",
+  recentlyRenovated: "",
+  insulationDetails: "",
+  sustainableInstallations: "",
+  purpose: "",
+  subsidyRequest: "",
+  deadline: "",
   firstName: "",
   lastName: "",
   email: "",
   phone: "",
-  additionalInfo: "",
+  preferredContactTime: "",
 };
 
 const steps = [
   {
     id: "services",
-    title: "Welk(e) type(n) dienstverlening wenst u?",
+    title: "Welke diensten wenst u af te nemen?",
   },
   {
-    id: "location",
-    title: "Waar moeten de werkzaamheden worden uitgevoerd?",
+    id: "property",
+    title: "Gegevens van de woning",
+  },
+  {
+    id: "condition",
+    title: "Huidige staat van de woning",
+  },
+  {
+    id: "project",
+    title: "Project details",
   },
   {
     id: "personal",
-    title: "Vul alle informatie in en Ontvang een Prijsindicatie",
+    title: "Uw contactgegevens",
   },
 ];
 
@@ -125,48 +140,32 @@ const houseTypes = [
 
 interface FormErrors {
   services?: string;
-  street?: string;
-  number?: string;
-  postalCode?: string;
+  address?: string;
   houseType?: string;
+  surfaceArea?: string;
+  constructionYear?: string;
+  recentlyRenovated?: string;
+  insulationDetails?: string;
+  sustainableInstallations?: string;
+  purpose?: string;
+  subsidyRequest?: string;
+  deadline?: string;
   firstName?: string;
   lastName?: string;
   email?: string;
   phone?: string;
+  preferredContactTime?: string;
 }
 
-// Add service configuration
-const serviceConfig: ServiceConfig = {
-  isolatie: {
-    label: "Isolatie",
-    subServices: [
-      { id: "gevelisolatie", label: "Gevelisolatie" },
-      { id: "dakisolatie", label: "Dakisolatie" },
-      { id: "vloerisolatie", label: "Vloerisolatie" },
-    ],
-  },
-  ventilatie: {
-    label: "Ventilatie",
-    subServices: [
-      { id: "wtwSystemen", label: "WTW-systemen" },
-      { id: "mechanischeVentilatie", label: "Mechanische ventilatie" },
-    ],
-  },
-  energiesystemen: {
-    label: "Energiesystemen",
-    subServices: [
-      { id: "warmtepompen", label: "Warmtepompen" },
-      { id: "hrKetels", label: "HR-ketels" },
-    ],
-  },
-  glasisolatie: {
-    label: "Glasisolatie",
-    subServices: [
-      { id: "hrPlusPlus", label: "HR++ glas" },
-      { id: "tripleGlas", label: "Triple glas" },
-    ],
-  },
-};
+// Update service configuration
+const serviceConfig = {
+  energielabel: { label: "Energielabel voor woning" },
+  nen2580: { label: "NEN 2580 meetrapport" },
+  wwsPunten: { label: "WWS puntentelling" },
+  duurzaamheidsadvies: { label: "Duurzaamheidsadvies voor woning" },
+  isolatieadvies: { label: "Isolatieadvies" },
+  verkoopklaar: { label: "Verkoopklaar maken woning" },
+} as const;
 
 export function ContactSection() {
   const [formData, setFormData] = useState<FormData>(initialFormData);
@@ -180,7 +179,7 @@ export function ContactSection() {
       setIsLoading(true);
 
       // Validate required fields
-      if (currentStep === 2) {
+      if (currentStep === 4) {
         if (
           !formData.firstName ||
           !formData.lastName ||
@@ -218,47 +217,35 @@ export function ContactSection() {
 
     switch (currentStep) {
       case 0:
-        const hasSelectedServices = Object.entries(serviceConfig).some(
-          ([key, _]) => {
-            const mainService =
-              formData.services[key as keyof typeof formData.services];
-            if (!mainService) return false;
-
-            const typeKey = `${key}Type` as keyof typeof formData.services;
-            const subServices = formData.services[typeKey] as Record<
-              string,
-              boolean
-            >;
-            return Object.values(subServices).some((checked) => checked);
-          }
-        );
-
-        if (!hasSelectedServices) {
-          newErrors.services =
-            "Selecteer minimaal één service en bijbehorende optie";
+        if (!Object.values(formData.serviceTypes).some((value) => value)) {
+          newErrors.services = "Selecteer minimaal één service";
         }
         break;
       case 1:
-        if (!formData.street.trim()) newErrors.street = "Straat is verplicht";
-        if (!formData.number.trim())
-          newErrors.number = "Huisnummer is verplicht";
-        if (!formData.postalCode.trim())
-          newErrors.postalCode = "Postcode is verplicht";
-        if (!formData.houseType)
-          newErrors.houseType = "Woningtype is verplicht";
+        if (!formData.address.trim()) newErrors.address = "Adres is verplicht";
+        if (!formData.houseType.trim()) newErrors.houseType = "Type woning is verplicht";
+        if (!formData.surfaceArea.trim()) newErrors.surfaceArea = "Oppervlakte is verplicht";
+        if (!formData.constructionYear.trim()) newErrors.constructionYear = "Bouwjaar is verplicht";
+        if (!formData.recentlyRenovated) newErrors.recentlyRenovated = "Selecteer of de woning recent gerenoveerd is";
         break;
       case 2:
-        if (!formData.firstName.trim())
-          newErrors.firstName = "Voornaam is verplicht";
-        if (!formData.lastName.trim())
-          newErrors.lastName = "Achternaam is verplicht";
+        if (!formData.insulationDetails.trim()) newErrors.insulationDetails = "Beschrijf de huidige isolatie";
+        if (!formData.sustainableInstallations.trim()) newErrors.sustainableInstallations = "Beschrijf de duurzame installaties";
+        break;
+      case 3:
+        if (!formData.purpose) newErrors.purpose = "Selecteer verkoop of verhuur";
+        if (!formData.subsidyRequest) newErrors.subsidyRequest = "Selecteer of er een subsidievraag is";
+        if (!formData.deadline) newErrors.deadline = "Selecteer een deadline";
+        break;
+      case 4:
+        if (!formData.firstName.trim()) newErrors.firstName = "Voornaam is verplicht";
+        if (!formData.lastName.trim()) newErrors.lastName = "Achternaam is verplicht";
         if (!formData.email.trim()) {
           newErrors.email = "Email is verplicht";
         } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
           newErrors.email = "Voer een geldig emailadres in";
         }
-        if (!formData.phone.trim())
-          newErrors.phone = "Telefoonnummer is verplicht";
+        if (!formData.phone.trim()) newErrors.phone = "Telefoonnummer is verplicht";
         break;
     }
 
@@ -288,246 +275,447 @@ export function ContactSection() {
       case 0:
         return (
           <div className="space-y-6">
-            {Object.entries(serviceConfig).map(([serviceKey, serviceData]) => (
-              <div key={serviceKey} className="space-y-3">
-                <div className="border rounded-lg">
-                  <label className="flex items-center p-4 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={
-                        (formData.services[
-                          serviceKey as keyof FormServices
-                        ] as boolean) || false
-                      }
-                      onChange={(e) => {
-                        const isChecked = e.target.checked;
-                        setFormData((prev) => {
-                          const typeKey =
-                            `${serviceKey}Type` as keyof FormServices;
-                          return {
-                            ...prev,
-                            services: {
-                              ...prev.services,
-                              [serviceKey]: isChecked,
-                              [typeKey]: Object.fromEntries(
-                                serviceData.subServices.map((sub) => [
-                                  sub.id,
-                                  false,
-                                ])
-                              ),
-                            },
-                          };
-                        });
-                      }}
-                      className="h-5 w-5 rounded border-gray-300"
-                    />
-                    <div className="ml-3 text-lg font-medium text-black dark:text-white">
-                      {serviceData.label}
-                    </div>
+            <h3 className="text-lg font-medium">Selecteer de gewenste diensten</h3>
+            <div className="grid gap-4">
+              {Object.entries(serviceConfig).map(([key, service]) => (
+                <div key={key} className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    id={key}
+                    checked={formData.serviceTypes[key as keyof typeof formData.serviceTypes]}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        serviceTypes: {
+                          ...formData.serviceTypes,
+                          [key]: e.target.checked,
+                        },
+                      })
+                    }
+                    className="h-4 w-4 rounded border-gray-300"
+                  />
+                  <label htmlFor={key} className="text-sm font-medium">
+                    {service.label}
                   </label>
                 </div>
-
-                {(formData.services[
-                  serviceKey as keyof FormServices
-                ] as boolean) && (
-                  <div className="ml-8 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {serviceData.subServices.map((subService) => (
-                      <div key={subService.id} className="border rounded-lg">
-                        <label className="flex items-center p-3 cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={
-                              (
-                                formData.services[
-                                  `${serviceKey}Type` as keyof FormServices
-                                ] as Record<string, boolean>
-                              )?.[subService.id] || false
-                            }
-                            onChange={(e) => {
-                              const isChecked = e.target.checked;
-                              setFormData((prev) => {
-                                const typeKey =
-                                  `${serviceKey}Type` as keyof FormServices;
-                                return {
-                                  ...prev,
-                                  services: {
-                                    ...prev.services,
-                                    [typeKey]: {
-                                      ...(prev.services[typeKey] as Record<
-                                        string,
-                                        boolean
-                                      >),
-                                      [subService.id]: isChecked,
-                                    },
-                                  },
-                                };
-                              });
-                            }}
-                            className="h-4 w-4 rounded border-gray-300"
-                          />
-                          <div className="ml-3 text-sm text-black dark:text-white">
-                            {subService.label}
-                          </div>
-                        </label>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            ))}
-
+              ))}
+            </div>
             {errors.services && (
-              <p className="text-destructive text-sm mt-2">{errors.services}</p>
+              <p className="text-sm text-red-500">{errors.services}</p>
             )}
           </div>
         );
 
       case 1:
         return (
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium mb-1">Straat *</label>
-              <Input
-                value={formData.street}
-                onChange={(e) =>
-                  setFormData({ ...formData, street: e.target.value })
-                }
-                className={errors.street ? "border-red-500" : ""}
-              />
-              {errors.street && (
-                <p className="text-red-500 text-sm mt-1">{errors.street}</p>
-              )}
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">
-                Huisnummer *
-              </label>
-              <Input
-                value={formData.number}
-                onChange={(e) =>
-                  setFormData({ ...formData, number: e.target.value })
-                }
-                className={errors.number ? "border-red-500" : ""}
-              />
-              {errors.number && (
-                <p className="text-red-500 text-sm mt-1">{errors.number}</p>
-              )}
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">
-                Postcode *
-              </label>
-              <Input
-                value={formData.postalCode}
-                onChange={(e) =>
-                  setFormData({ ...formData, postalCode: e.target.value })
-                }
-                className={errors.postalCode ? "border-red-500" : ""}
-              />
-              {errors.postalCode && (
-                <p className="text-red-500 text-sm mt-1">{errors.postalCode}</p>
-              )}
-            </div>
-            <div className="space-y-3">
-              <h3 className="text-lg font-medium">Welk type woning heeft u?</h3>
-              <div className="space-y-3">
-                {houseTypes.map((type) => (
-                  <label key={type.id} className="flex items-center space-x-3">
+          <div className="space-y-6">
+            <h3 className="text-lg font-medium">Gegevens van de woning</h3>
+            <div className="grid gap-4">
+              <div>
+                <label htmlFor="address" className="block text-sm font-medium">
+                  Adres
+                </label>
+                <Input
+                  id="address"
+                  value={formData.address}
+                  onChange={(e) =>
+                    setFormData({ ...formData, address: e.target.value })
+                  }
+                  placeholder="Vul het adres in"
+                />
+                {errors.address && (
+                  <p className="mt-1 text-sm text-red-500">{errors.address}</p>
+                )}
+              </div>
+
+              <div>
+                <label htmlFor="houseType" className="block text-sm font-medium">
+                  Type woning
+                </label>
+                <select
+                  id="houseType"
+                  value={formData.houseType}
+                  onChange={(e) =>
+                    setFormData({ ...formData, houseType: e.target.value })
+                  }
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary"
+                >
+                  <option value="">Selecteer type woning</option>
+                  {houseTypes.map((type) => (
+                    <option key={type.id} value={type.id}>
+                      {type.label}
+                    </option>
+                  ))}
+                </select>
+                {errors.houseType && (
+                  <p className="mt-1 text-sm text-red-500">{errors.houseType}</p>
+                )}
+              </div>
+
+              <div>
+                <label htmlFor="surfaceArea" className="block text-sm font-medium">
+                  Oppervlakte (m²)
+                </label>
+                <Input
+                  id="surfaceArea"
+                  type="number"
+                  value={formData.surfaceArea}
+                  onChange={(e) =>
+                    setFormData({ ...formData, surfaceArea: e.target.value })
+                  }
+                  placeholder="Vul de oppervlakte in"
+                />
+                {errors.surfaceArea && (
+                  <p className="mt-1 text-sm text-red-500">{errors.surfaceArea}</p>
+                )}
+              </div>
+
+              <div>
+                <label htmlFor="constructionYear" className="block text-sm font-medium">
+                  Bouwjaar
+                </label>
+                <Input
+                  id="constructionYear"
+                  type="number"
+                  value={formData.constructionYear}
+                  onChange={(e) =>
+                    setFormData({ ...formData, constructionYear: e.target.value })
+                  }
+                  placeholder="Vul het bouwjaar in"
+                />
+                {errors.constructionYear && (
+                  <p className="mt-1 text-sm text-red-500">{errors.constructionYear}</p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium">
+                  Is de woning recent gerenoveerd?
+                </label>
+                <div className="mt-2 space-x-4">
+                  <label className="inline-flex items-center">
                     <input
                       type="radio"
-                      name="houseType"
-                      value={type.id}
-                      checked={formData.houseType === type.id}
+                      value="ja"
+                      checked={formData.recentlyRenovated === "ja"}
                       onChange={(e) =>
                         setFormData({
                           ...formData,
-                          houseType: e.target.value as FormData["houseType"],
+                          recentlyRenovated: e.target.value as "ja" | "nee",
                         })
                       }
-                      className="w-5 h-5 border-gray-300 text-primary focus:ring-primary"
+                      className="h-4 w-4 border-gray-300"
                     />
-                    <span className="text-base">{type.label}</span>
+                    <span className="ml-2">Ja</span>
                   </label>
-                ))}
+                  <label className="inline-flex items-center">
+                    <input
+                      type="radio"
+                      value="nee"
+                      checked={formData.recentlyRenovated === "nee"}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          recentlyRenovated: e.target.value as "ja" | "nee",
+                        })
+                      }
+                      className="h-4 w-4 border-gray-300"
+                    />
+                    <span className="ml-2">Nee</span>
+                  </label>
+                </div>
+                {errors.recentlyRenovated && (
+                  <p className="mt-1 text-sm text-red-500">{errors.recentlyRenovated}</p>
+                )}
               </div>
             </div>
-            {errors.houseType && (
-              <p className="text-red-500 text-sm mt-1">{errors.houseType}</p>
-            )}
           </div>
         );
 
       case 2:
         return (
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium mb-1">
-                Voornaam *
-              </label>
-              <Input
-                value={formData.firstName}
-                onChange={(e) =>
-                  setFormData({ ...formData, firstName: e.target.value })
-                }
-                className={errors.firstName ? "border-red-500" : ""}
-              />
-              {errors.firstName && (
-                <p className="text-red-500 text-sm mt-1">{errors.firstName}</p>
-              )}
+          <div className="space-y-6">
+            <h3 className="text-lg font-medium">Huidige staat van de woning</h3>
+            <div className="grid gap-4">
+              <div>
+                <label htmlFor="insulationDetails" className="block text-sm font-medium">
+                  Huidige isolatie
+                </label>
+                <Textarea
+                  id="insulationDetails"
+                  value={formData.insulationDetails}
+                  onChange={(e) =>
+                    setFormData({ ...formData, insulationDetails: e.target.value })
+                  }
+                  placeholder="Beschrijf de huidige isolatie van de woning"
+                  rows={4}
+                />
+                {errors.insulationDetails && (
+                  <p className="mt-1 text-sm text-red-500">{errors.insulationDetails}</p>
+                )}
+              </div>
+
+              <div>
+                <label htmlFor="sustainableInstallations" className="block text-sm font-medium">
+                  Duurzame installaties
+                </label>
+                <Textarea
+                  id="sustainableInstallations"
+                  value={formData.sustainableInstallations}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      sustainableInstallations: e.target.value,
+                    })
+                  }
+                  placeholder="Beschrijf de aanwezige duurzame installaties"
+                  rows={4}
+                />
+                {errors.sustainableInstallations && (
+                  <p className="mt-1 text-sm text-red-500">{errors.sustainableInstallations}</p>
+                )}
+              </div>
             </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">
-                Achternaam *
-              </label>
-              <Input
-                value={formData.lastName}
-                onChange={(e) =>
-                  setFormData({ ...formData, lastName: e.target.value })
-                }
-                className={errors.lastName ? "border-red-500" : ""}
-              />
-              {errors.lastName && (
-                <p className="text-red-500 text-sm mt-1">{errors.lastName}</p>
-              )}
+          </div>
+        );
+
+      case 3:
+        return (
+          <div className="space-y-6">
+            <h3 className="text-lg font-medium">Project details</h3>
+            <div className="grid gap-4">
+              <div>
+                <label className="block text-sm font-medium">Doel</label>
+                <div className="mt-2 space-x-4">
+                  <label className="inline-flex items-center">
+                    <input
+                      type="radio"
+                      value="verkoop"
+                      checked={formData.purpose === "verkoop"}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          purpose: e.target.value as "verkoop" | "verhuur",
+                        })
+                      }
+                      className="h-4 w-4 border-gray-300"
+                    />
+                    <span className="ml-2">Verkoop</span>
+                  </label>
+                  <label className="inline-flex items-center">
+                    <input
+                      type="radio"
+                      value="verhuur"
+                      checked={formData.purpose === "verhuur"}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          purpose: e.target.value as "verkoop" | "verhuur",
+                        })
+                      }
+                      className="h-4 w-4 border-gray-300"
+                    />
+                    <span className="ml-2">Verhuur</span>
+                  </label>
+                </div>
+                {errors.purpose && (
+                  <p className="mt-1 text-sm text-red-500">{errors.purpose}</p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium">
+                  Wilt u een subsidie aanvragen?
+                </label>
+                <div className="mt-2 space-x-4">
+                  <label className="inline-flex items-center">
+                    <input
+                      type="radio"
+                      value="ja"
+                      checked={formData.subsidyRequest === "ja"}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          subsidyRequest: e.target.value as "ja" | "nee",
+                        })
+                      }
+                      className="h-4 w-4 border-gray-300"
+                    />
+                    <span className="ml-2">Ja</span>
+                  </label>
+                  <label className="inline-flex items-center">
+                    <input
+                      type="radio"
+                      value="nee"
+                      checked={formData.subsidyRequest === "nee"}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          subsidyRequest: e.target.value as "ja" | "nee",
+                        })
+                      }
+                      className="h-4 w-4 border-gray-300"
+                    />
+                    <span className="ml-2">Nee</span>
+                  </label>
+                </div>
+                {errors.subsidyRequest && (
+                  <p className="mt-1 text-sm text-red-500">{errors.subsidyRequest}</p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium">Deadline</label>
+                <div className="mt-2 space-x-4">
+                  <label className="inline-flex items-center">
+                    <input
+                      type="radio"
+                      value="standaard"
+                      checked={formData.deadline === "standaard"}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          deadline: e.target.value as "standaard" | "spoed",
+                        })
+                      }
+                      className="h-4 w-4 border-gray-300"
+                    />
+                    <span className="ml-2">Standaard</span>
+                  </label>
+                  <label className="inline-flex items-center">
+                    <input
+                      type="radio"
+                      value="spoed"
+                      checked={formData.deadline === "spoed"}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          deadline: e.target.value as "standaard" | "spoed",
+                        })
+                      }
+                      className="h-4 w-4 border-gray-300"
+                    />
+                    <span className="ml-2">Spoed</span>
+                  </label>
+                </div>
+                {errors.deadline && (
+                  <p className="mt-1 text-sm text-red-500">{errors.deadline}</p>
+                )}
+              </div>
             </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">
-                E-mailadres *
-              </label>
-              <Input
-                value={formData.email}
-                onChange={(e) =>
-                  setFormData({ ...formData, email: e.target.value })
-                }
-                className={errors.email ? "border-red-500" : ""}
-              />
-              {errors.email && (
-                <p className="text-red-500 text-sm mt-1">{errors.email}</p>
-              )}
+          </div>
+        );
+
+      case 4:
+        return (
+          <div className="space-y-6">
+            <h3 className="text-lg font-medium">Uw contactgegevens</h3>
+            <div className="grid gap-4">
+              <div>
+                <label htmlFor="firstName" className="block text-sm font-medium">
+                  Voornaam
+                </label>
+                <Input
+                  id="firstName"
+                  value={formData.firstName}
+                  onChange={(e) =>
+                    setFormData({ ...formData, firstName: e.target.value })
+                  }
+                  placeholder="Vul uw voornaam in"
+                />
+                {errors.firstName && (
+                  <p className="mt-1 text-sm text-red-500">{errors.firstName}</p>
+                )}
+              </div>
+
+              <div>
+                <label htmlFor="lastName" className="block text-sm font-medium">
+                  Achternaam
+                </label>
+                <Input
+                  id="lastName"
+                  value={formData.lastName}
+                  onChange={(e) =>
+                    setFormData({ ...formData, lastName: e.target.value })
+                  }
+                  placeholder="Vul uw achternaam in"
+                />
+                {errors.lastName && (
+                  <p className="mt-1 text-sm text-red-500">{errors.lastName}</p>
+                )}
+              </div>
+
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium">
+                  Email
+                </label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
+                  placeholder="Vul uw emailadres in"
+                />
+                {errors.email && (
+                  <p className="mt-1 text-sm text-red-500">{errors.email}</p>
+                )}
+              </div>
+
+              <div>
+                <label htmlFor="phone" className="block text-sm font-medium">
+                  Telefoonnummer
+                </label>
+                <Input
+                  id="phone"
+                  type="tel"
+                  value={formData.phone}
+                  onChange={(e) =>
+                    setFormData({ ...formData, phone: e.target.value })
+                  }
+                  placeholder="Vul uw telefoonnummer in"
+                />
+                {errors.phone && (
+                  <p className="mt-1 text-sm text-red-500">{errors.phone}</p>
+                )}
+              </div>
+
+              <div>
+                <label htmlFor="preferredContactTime" className="block text-sm font-medium">
+                  Voorkeurstijd voor contact
+                </label>
+                <Input
+                  id="preferredContactTime"
+                  value={formData.preferredContactTime}
+                  onChange={(e) =>
+                    setFormData({ ...formData, preferredContactTime: e.target.value })
+                  }
+                  placeholder="Bijv. 's ochtends, 's middags, etc."
+                />
+                {errors.preferredContactTime && (
+                  <p className="mt-1 text-sm text-red-500">{errors.preferredContactTime}</p>
+                )}
+              </div>
+
+              <div>
+                <label htmlFor="additionalDocuments" className="block text-sm font-medium">
+                  Extra documenten (optioneel)
+                </label>
+                <Input
+                  id="additionalDocuments"
+                  type="file"
+                  multiple
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      additionalDocuments: e.target.files || undefined,
+                    })
+                  }
+                  className="mt-1"
+                />
+              </div>
             </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">
-                Telefoonnummer *
-              </label>
-              <Input
-                value={formData.phone}
-                onChange={(e) =>
-                  setFormData({ ...formData, phone: e.target.value })
-                }
-                className={errors.phone ? "border-red-500" : ""}
-              />
-              {errors.phone && (
-                <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
-              )}
-            </div>
-            <Textarea
-              placeholder="Aanvullende informatie (optioneel)"
-              value={formData.additionalInfo}
-              onChange={(e) =>
-                setFormData({ ...formData, additionalInfo: e.target.value })
-              }
-              className="min-h-[100px]"
-            />
           </div>
         );
 
@@ -543,11 +731,6 @@ export function ContactSection() {
           {/* Left Side - Contact Info */}
           <div className="order-1 md:order-2 w-full max-w-xl mx-auto lg:mx-0">
             <div className="bg-background rounded-xl shadow-lg p-8 border border-border relative">
-              {/* Subsidy Badge */}
-              {/* <div className="absolute -right-4 top-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg transform rotate-12">
-                <span className="text-sm font-medium">€ Subsidie mogelijk!</span>
-              </div> */}
-
               {/* Main Title */}
               <h2 className="text-xl font-semibold text-center mb-6">
                 Gratis offerte aanvragen voor de isolatie van uw woning
@@ -559,13 +742,13 @@ export function ContactSection() {
                   <div key={index} className="flex items-center">
                     <div
                       className={`
-                      w-8 h-8 rounded-full flex items-center justify-center
-                      ${
-                        index === currentStep
-                          ? "bg-primary text-white"
-                          : "bg-gray-200"
-                      }
-                    `}
+                        w-8 h-8 rounded-full flex items-center justify-center
+                        ${
+                          index === currentStep
+                            ? "bg-primary text-white"
+                            : "bg-gray-200"
+                        }
+                      `}
                     >
                       {index + 1}
                     </div>
@@ -661,17 +844,16 @@ export function ContactSection() {
               </h2>
             </div>
 
-            {/* Why Contact Ons */}
+            {/* Why Contact Ons */}
             <div className="space-y-4">
               <h3 className="text-xl font-semibold">
                 Waarom kiezen voor onze diensten?
               </h3>
               <ul className="space-y-3">
                 {[
-                   "Complete ontzorging",
-                   "Startdatum binnen 2 weken",
-                   "Actief in de hele Randstad",
-                   "Subsidie-begeleiding",
+                   "Snel en compliant",
+                   "Gepersonaliseerde efficiënti",
+                   "End-to-end service",
                 ].map((item, index) => (
                   <motion.li
                     key={index}

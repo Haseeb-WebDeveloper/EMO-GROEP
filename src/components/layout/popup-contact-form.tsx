@@ -47,72 +47,87 @@ interface FormServices {
 }
 
 interface FormData {
-  services: FormServices;
-  // Step 2
-  street: string;
-  number: string;
-  postalCode: string;
-  houseType:
-    | "hoekwoning"
-    | "tussenwoning"
-    | "vrijstaande"
-    | "twee-onder-een-kap"
-    | "";
-  // Step 3
+  // Step 1 - Service Selection
+  serviceTypes: {
+    energielabel: boolean;
+    nen2580: boolean;
+    wwsPunten: boolean;
+    duurzaamheidsadvies: boolean;
+    isolatieadvies: boolean;
+    verkoopklaar: boolean;
+  };
+  
+  // Step 2 - Property Details
+  address: string;
+  houseType: string;
+  surfaceArea: string;
+  constructionYear: string;
+  recentlyRenovated: "ja" | "nee" | "";
+  
+  // Step 3 - Property Condition
+  insulationDetails: string;
+  sustainableInstallations: string;
+  
+  // Step 4 - Project Details
+  purpose: "verkoop" | "verhuur" | "";
+  subsidyRequest: "ja" | "nee" | "";
+  deadline: "standaard" | "spoed" | "";
+  
+  // Step 5 - Personal Information
   firstName: string;
   lastName: string;
   email: string;
   phone: string;
-  additionalInfo: string;
+  preferredContactTime: string;
+  additionalDocuments?: FileList;
 }
 
 const initialFormData: FormData = {
-  services: {
-    isolatie: false,
-    isolatieType: {
-      gevelisolatie: false,
-      dakisolatie: false,
-      vloerisolatie: false,
-    },
-    ventilatie: false,
-    ventilatieType: {
-      wtwSystemen: false,
-      mechanischeVentilatie: false,
-    },
-    energiesystemen: false,
-    energieType: {
-      warmtepompen: false,
-      hrKetels: false,
-    },
-    glasisolatie: false,
-    glasType: {
-      hrPlusPlus: false,
-      tripleGlas: false,
-    },
+  serviceTypes: {
+    energielabel: false,
+    nen2580: false,
+    wwsPunten: false,
+    duurzaamheidsadvies: false,
+    isolatieadvies: false,
+    verkoopklaar: false,
   },
-  street: "",
-  number: "",
-  postalCode: "",
+  address: "",
   houseType: "",
+  surfaceArea: "",
+  constructionYear: "",
+  recentlyRenovated: "",
+  insulationDetails: "",
+  sustainableInstallations: "",
+  purpose: "",
+  subsidyRequest: "",
+  deadline: "",
   firstName: "",
   lastName: "",
   email: "",
   phone: "",
-  additionalInfo: "",
+  preferredContactTime: "",
 };
 
 const steps = [
   {
     id: "services",
-    title: "Welk(e) type(n) dienstverlening wenst u?",
+    title: "Welke diensten wenst u af te nemen?",
   },
   {
-    id: "location",
-    title: "Waar moeten de werkzaamheden worden uitgevoerd?",
+    id: "property",
+    title: "Gegevens van de woning",
+  },
+  {
+    id: "condition",
+    title: "Huidige staat van de woning",
+  },
+  {
+    id: "project",
+    title: "Project details",
   },
   {
     id: "personal",
-    title: "Vul alle informatie in en Ontvang een Prijsindicatie",
+    title: "Uw contactgegevens",
   },
 ];
 
@@ -125,48 +140,32 @@ const houseTypes = [
 
 interface FormErrors {
   services?: string;
-  street?: string;
-  number?: string;
-  postalCode?: string;
+  address?: string;
   houseType?: string;
+  surfaceArea?: string;
+  constructionYear?: string;
+  recentlyRenovated?: string;
+  insulationDetails?: string;
+  sustainableInstallations?: string;
+  purpose?: string;
+  subsidyRequest?: string;
+  deadline?: string;
   firstName?: string;
   lastName?: string;
   email?: string;
   phone?: string;
+  preferredContactTime?: string;
 }
 
-// Add service configuration
-const serviceConfig: ServiceConfig = {
-  isolatie: {
-    label: "Isolatie",
-    subServices: [
-      { id: "gevelisolatie", label: "Gevelisolatie" },
-      { id: "dakisolatie", label: "Dakisolatie" },
-      { id: "vloerisolatie", label: "Vloerisolatie" },
-    ],
-  },
-  ventilatie: {
-    label: "Ventilatie",
-    subServices: [
-      { id: "wtwSystemen", label: "WTW-systemen" },
-      { id: "mechanischeVentilatie", label: "Mechanische ventilatie" },
-    ],
-  },
-  energiesystemen: {
-    label: "Energiesystemen",
-    subServices: [
-      { id: "warmtepompen", label: "Warmtepompen" },
-      { id: "hrKetels", label: "HR-ketels" },
-    ],
-  },
-  glasisolatie: {
-    label: "Glasisolatie",
-    subServices: [
-      { id: "hrPlusPlus", label: "HR++ glas" },
-      { id: "tripleGlas", label: "Triple glas" },
-    ],
-  },
-};
+// Update service configuration
+const serviceConfig = {
+  energielabel: { label: "Energielabel voor woning" },
+  nen2580: { label: "NEN 2580 meetrapport" },
+  wwsPunten: { label: "WWS puntentelling" },
+  duurzaamheidsadvies: { label: "Duurzaamheidsadvies voor woning" },
+  isolatieadvies: { label: "Isolatieadvies" },
+  verkoopklaar: { label: "Verkoopklaar maken woning" },
+} as const;
 
 interface PopUpContactSectionProps {
   isPopup?: boolean;
@@ -228,31 +227,35 @@ export function PopUpContactSection({
 
     switch (currentStep) {
       case 0:
-        if (!Object.values(formData.services).some((value) => value)) {
+        if (!Object.values(formData.serviceTypes).some((value) => value)) {
           newErrors.services = "Selecteer minimaal één service";
         }
         break;
       case 1:
-        if (!formData.street.trim()) newErrors.street = "Straat is verplicht";
-        if (!formData.number.trim())
-          newErrors.number = "Huisnummer is verplicht";
-        if (!formData.postalCode.trim())
-          newErrors.postalCode = "Postcode is verplicht";
-        if (!formData.houseType)
-          newErrors.houseType = "Woningtype is verplicht";
+        if (!formData.address.trim()) newErrors.address = "Adres is verplicht";
+        if (!formData.houseType.trim()) newErrors.houseType = "Type woning is verplicht";
+        if (!formData.surfaceArea.trim()) newErrors.surfaceArea = "Oppervlakte is verplicht";
+        if (!formData.constructionYear.trim()) newErrors.constructionYear = "Bouwjaar is verplicht";
+        if (!formData.recentlyRenovated) newErrors.recentlyRenovated = "Selecteer of de woning recent gerenoveerd is";
         break;
       case 2:
-        if (!formData.firstName.trim())
-          newErrors.firstName = "Voornaam is verplicht";
-        if (!formData.lastName.trim())
-          newErrors.lastName = "Achternaam is verplicht";
+        if (!formData.insulationDetails.trim()) newErrors.insulationDetails = "Beschrijf de huidige isolatie";
+        if (!formData.sustainableInstallations.trim()) newErrors.sustainableInstallations = "Beschrijf de duurzame installaties";
+        break;
+      case 3:
+        if (!formData.purpose) newErrors.purpose = "Selecteer verkoop of verhuur";
+        if (!formData.subsidyRequest) newErrors.subsidyRequest = "Selecteer of er een subsidievraag is";
+        if (!formData.deadline) newErrors.deadline = "Selecteer een deadline";
+        break;
+      case 4:
+        if (!formData.firstName.trim()) newErrors.firstName = "Voornaam is verplicht";
+        if (!formData.lastName.trim()) newErrors.lastName = "Achternaam is verplicht";
         if (!formData.email.trim()) {
           newErrors.email = "Email is verplicht";
         } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
           newErrors.email = "Voer een geldig emailadres in";
         }
-        if (!formData.phone.trim())
-          newErrors.phone = "Telefoonnummer is verplicht";
+        if (!formData.phone.trim()) newErrors.phone = "Telefoonnummer is verplicht";
         break;
     }
 
@@ -284,36 +287,21 @@ export function PopUpContactSection({
           <div className="space-y-6">
             {Object.entries(serviceConfig).map(([serviceKey, serviceData]) => (
               <div key={serviceKey} className="space-y-3">
-                {/* Main service checkbox */}
                 <div className="block w-full rounded-lg border hover:border-primary/50">
                   <label className="flex items-center w-full p-4 cursor-pointer">
                     <div className="flex items-center gap-3 flex-1">
                       <input
                         type="checkbox"
-                        checked={
-                          (formData.services[
-                            serviceKey as keyof FormServices
-                          ] as boolean) || false
-                        }
+                        checked={formData.serviceTypes[serviceKey as keyof typeof formData.serviceTypes]}
                         onChange={(e) => {
                           const isChecked = e.target.checked;
-                          setFormData((prev) => {
-                            const typeKey =
-                              `${serviceKey}Type` as keyof FormServices;
-                            return {
-                              ...prev,
-                              services: {
-                                ...prev.services,
-                                [serviceKey]: isChecked,
-                                [typeKey]: Object.fromEntries(
-                                  serviceData.subServices.map((sub) => [
-                                    sub.id,
-                                    false,
-                                  ])
-                                ),
-                              },
-                            };
-                          });
+                          setFormData((prev) => ({
+                            ...prev,
+                            serviceTypes: {
+                              ...prev.serviceTypes,
+                              [serviceKey]: isChecked,
+                            },
+                          }));
                         }}
                         className="h-5 w-5 rounded border-gray-300 text-primary focus:ring-primary"
                       />
@@ -323,62 +311,8 @@ export function PopUpContactSection({
                     </div>
                   </label>
                 </div>
-
-                {/* Sub-services */}
-                {(formData.services[
-                  serviceKey as keyof FormServices
-                ] as boolean) && (
-                  <div className="ml-8 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {serviceData.subServices.map((subService) => (
-                      <div
-                        key={subService.id}
-                        className="block w-full rounded-lg border hover:border-primary/50"
-                      >
-                        <label className="flex items-center w-full p-3 cursor-pointer">
-                          <div className="flex items-center gap-3 flex-1">
-                            <input
-                              type="checkbox"
-                              checked={
-                                (
-                                  formData.services[
-                                    `${serviceKey}Type` as keyof FormServices
-                                  ] as Record<string, boolean>
-                                )?.[subService.id] || false
-                              }
-                              onChange={(e) => {
-                                const isChecked = e.target.checked;
-                                setFormData((prev) => {
-                                  const typeKey =
-                                    `${serviceKey}Type` as keyof FormServices;
-                                  return {
-                                    ...prev,
-                                    services: {
-                                      ...prev.services,
-                                      [typeKey]: {
-                                        ...(prev.services[typeKey] as Record<
-                                          string,
-                                          boolean
-                                        >),
-                                        [subService.id]: isChecked,
-                                      },
-                                    },
-                                  };
-                                });
-                              }}
-                              className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
-                            />
-                            <span className="block text-sm">
-                              {subService.label}
-                            </span>
-                          </div>
-                        </label>
-                      </div>
-                    ))}
-                  </div>
-                )}
               </div>
             ))}
-
             {errors.services && (
               <p className="text-destructive text-sm mt-2">{errors.services}</p>
             )}
@@ -389,74 +323,66 @@ export function PopUpContactSection({
         return (
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium mb-1">Straat *</label>
+              <label className="block text-sm font-medium mb-1">Adres van de woning *</label>
               <Input
-                value={formData.street}
-                onChange={(e) =>
-                  setFormData({ ...formData, street: e.target.value })
-                }
-                className={errors.street ? "border-red-500" : ""}
+                value={formData.address}
+                onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                className={errors.address ? "border-red-500" : ""}
               />
-              {errors.street && (
-                <p className="text-red-500 text-sm mt-1">{errors.street}</p>
+              {errors.address && (
+                <p className="text-red-500 text-sm mt-1">{errors.address}</p>
               )}
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">
-                Huisnummer *
-              </label>
+              <label className="block text-sm font-medium mb-1">Type woning *</label>
               <Input
-                value={formData.number}
-                onChange={(e) =>
-                  setFormData({ ...formData, number: e.target.value })
-                }
-                className={errors.number ? "border-red-500" : ""}
+                value={formData.houseType}
+                onChange={(e) => setFormData({ ...formData, houseType: e.target.value })}
+                className={errors.houseType ? "border-red-500" : ""}
               />
-              {errors.number && (
-                <p className="text-red-500 text-sm mt-1">{errors.number}</p>
+              {errors.houseType && (
+                <p className="text-red-500 text-sm mt-1">{errors.houseType}</p>
               )}
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">
-                Postcode *
-              </label>
+              <label className="block text-sm font-medium mb-1">Oppervlakte woning (m²) *</label>
               <Input
-                value={formData.postalCode}
-                onChange={(e) =>
-                  setFormData({ ...formData, postalCode: e.target.value })
-                }
-                className={errors.postalCode ? "border-red-500" : ""}
+                type="number"
+                value={formData.surfaceArea}
+                onChange={(e) => setFormData({ ...formData, surfaceArea: e.target.value })}
+                className={errors.surfaceArea ? "border-red-500" : ""}
               />
-              {errors.postalCode && (
-                <p className="text-red-500 text-sm mt-1">{errors.postalCode}</p>
+              {errors.surfaceArea && (
+                <p className="text-red-500 text-sm mt-1">{errors.surfaceArea}</p>
               )}
             </div>
-            <div className="space-y-3">
-              <h3 className="text-lg font-medium">Welk type woning heeft u?</h3>
-              <div className="space-y-3">
-                {houseTypes.map((type) => (
-                  <label key={type.id} className="flex items-center space-x-3">
-                    <input
-                      type="radio"
-                      name="houseType"
-                      value={type.id}
-                      checked={formData.houseType === type.id}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          houseType: e.target.value as FormData["houseType"],
-                        })
-                      }
-                      className="w-5 h-5 border-gray-300 text-primary focus:ring-primary"
-                    />
-                    <span className="text-base">{type.label}</span>
-                  </label>
-                ))}
-              </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Bouwjaar woning *</label>
+              <Input
+                type="number"
+                value={formData.constructionYear}
+                onChange={(e) => setFormData({ ...formData, constructionYear: e.target.value })}
+                className={errors.constructionYear ? "border-red-500" : ""}
+              />
+              {errors.constructionYear && (
+                <p className="text-red-500 text-sm mt-1">{errors.constructionYear}</p>
+              )}
             </div>
-            {errors.houseType && (
-              <p className="text-red-500 text-sm mt-1">{errors.houseType}</p>
-            )}
+            <div>
+              <label className="block text-sm font-medium mb-1">Recent gerenoveerd? *</label>
+              <select
+                value={formData.recentlyRenovated}
+                onChange={(e) => setFormData({ ...formData, recentlyRenovated: e.target.value as "ja" | "nee" | "" })}
+                className={errors.recentlyRenovated ? "border-red-500" : ""}
+              >
+                <option value="">Selecteer</option>
+                <option value="ja">Ja</option>
+                <option value="nee">Nee</option>
+              </select>
+              {errors.recentlyRenovated && (
+                <p className="text-red-500 text-sm mt-1">{errors.recentlyRenovated}</p>
+              )}
+            </div>
           </div>
         );
 
@@ -464,14 +390,91 @@ export function PopUpContactSection({
         return (
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium mb-1">
-                Voornaam *
-              </label>
+              <label className="block text-sm font-medium mb-1">Isolatie aanwezig? *</label>
+              <Textarea
+                value={formData.insulationDetails}
+                onChange={(e) => setFormData({ ...formData, insulationDetails: e.target.value })}
+                className={errors.insulationDetails ? "border-red-500" : ""}
+                placeholder="Beschrijf de huidige isolatie van uw woning"
+              />
+              {errors.insulationDetails && (
+                <p className="text-red-500 text-sm mt-1">{errors.insulationDetails}</p>
+              )}
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Duurzame installaties? *</label>
+              <Textarea
+                value={formData.sustainableInstallations}
+                onChange={(e) => setFormData({ ...formData, sustainableInstallations: e.target.value })}
+                className={errors.sustainableInstallations ? "border-red-500" : ""}
+                placeholder="Beschrijf de duurzame installaties in uw woning"
+              />
+              {errors.sustainableInstallations && (
+                <p className="text-red-500 text-sm mt-1">{errors.sustainableInstallations}</p>
+              )}
+            </div>
+          </div>
+        );
+
+      case 3:
+        return (
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium mb-1">Verkoop of verhuur? *</label>
+              <select
+                value={formData.purpose}
+                onChange={(e) => setFormData({ ...formData, purpose: e.target.value as "verkoop" | "verhuur" | "" })}
+                className={errors.purpose ? "border-red-500" : ""}
+              >
+                <option value="">Selecteer</option>
+                <option value="verkoop">Verkoop</option>
+                <option value="verhuur">Verhuur</option>
+              </select>
+              {errors.purpose && (
+                <p className="text-red-500 text-sm mt-1">{errors.purpose}</p>
+              )}
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Subsidievraag? *</label>
+              <select
+                value={formData.subsidyRequest}
+                onChange={(e) => setFormData({ ...formData, subsidyRequest: e.target.value as "ja" | "nee" | "" })}
+                className={errors.subsidyRequest ? "border-red-500" : ""}
+              >
+                <option value="">Selecteer</option>
+                <option value="ja">Ja</option>
+                <option value="nee">Nee</option>
+              </select>
+              {errors.subsidyRequest && (
+                <p className="text-red-500 text-sm mt-1">{errors.subsidyRequest}</p>
+              )}
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Deadline *</label>
+              <select
+                value={formData.deadline}
+                onChange={(e) => setFormData({ ...formData, deadline: e.target.value as "standaard" | "spoed" | "" })}
+                className={errors.deadline ? "border-red-500" : ""}
+              >
+                <option value="">Selecteer</option>
+                <option value="standaard">Standaard levering (3-5 werkdagen)</option>
+                <option value="spoed">Spoedaanvraag (1-2 werkdagen)</option>
+              </select>
+              {errors.deadline && (
+                <p className="text-red-500 text-sm mt-1">{errors.deadline}</p>
+              )}
+            </div>
+          </div>
+        );
+
+      case 4:
+        return (
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium mb-1">Voornaam *</label>
               <Input
                 value={formData.firstName}
-                onChange={(e) =>
-                  setFormData({ ...formData, firstName: e.target.value })
-                }
+                onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
                 className={errors.firstName ? "border-red-500" : ""}
               />
               {errors.firstName && (
@@ -479,14 +482,10 @@ export function PopUpContactSection({
               )}
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">
-                Achternaam *
-              </label>
+              <label className="block text-sm font-medium mb-1">Achternaam *</label>
               <Input
                 value={formData.lastName}
-                onChange={(e) =>
-                  setFormData({ ...formData, lastName: e.target.value })
-                }
+                onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
                 className={errors.lastName ? "border-red-500" : ""}
               />
               {errors.lastName && (
@@ -494,14 +493,11 @@ export function PopUpContactSection({
               )}
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">
-                E-mailadres *
-              </label>
+              <label className="block text-sm font-medium mb-1">E-mailadres *</label>
               <Input
+                type="email"
                 value={formData.email}
-                onChange={(e) =>
-                  setFormData({ ...formData, email: e.target.value })
-                }
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 className={errors.email ? "border-red-500" : ""}
               />
               {errors.email && (
@@ -509,28 +505,33 @@ export function PopUpContactSection({
               )}
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">
-                Telefoonnummer *
-              </label>
+              <label className="block text-sm font-medium mb-1">Telefoonnummer *</label>
               <Input
+                type="tel"
                 value={formData.phone}
-                onChange={(e) =>
-                  setFormData({ ...formData, phone: e.target.value })
-                }
+                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                 className={errors.phone ? "border-red-500" : ""}
               />
               {errors.phone && (
                 <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
               )}
             </div>
-            <Textarea
-              placeholder="Aanvullende informatie (optioneel)"
-              value={formData.additionalInfo}
-              onChange={(e) =>
-                setFormData({ ...formData, additionalInfo: e.target.value })
-              }
-              className="min-h-[100px]"
-            />
+            <div>
+              <label className="block text-sm font-medium mb-1">Voorkeur voor contactmoment</label>
+              <Input
+                value={formData.preferredContactTime}
+                onChange={(e) => setFormData({ ...formData, preferredContactTime: e.target.value })}
+                placeholder="Bijv. 's ochtends tussen 9-12 uur"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Extra documenten (optioneel)</label>
+              <Input
+                type="file"
+                onChange={(e) => setFormData({ ...formData, additionalDocuments: e.target.files || undefined })}
+                multiple
+              />
+            </div>
           </div>
         );
 

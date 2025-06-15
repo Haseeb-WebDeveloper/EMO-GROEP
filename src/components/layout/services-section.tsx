@@ -7,26 +7,26 @@ import Link from "next/link";
 
 const services = [
   {
-    title: "Energy Label for Homes",
-    paragraph: "Fast, compliant energy label reporting — ideal for sale or rental.",
+    title: "Energielabel voor woningen",
+    paragraph: "Snelle, conforme rapportage over energielabels: ideaal voor verkoop of verhuur.",
     image: "/Energy-Label.avif",
-    link: "https://isodomi.nl/"
+    link: "#contact"
   },
   {
-    title: "NEN 2580 Measurement",
-    paragraph: "Precise living area measurement by certified assessors.",
+    title: "NEN 2580 meetrapport",
+    paragraph: "Nauwkeurige meting van de woonoppervlakte door gecertificeerde taxateurs.",
     image: "/NEN-2580-Measurement.avif",
     link: "#contact"
   },
   {
-    title: "WWS Point Analysis",
-    paragraph: "Transparent scoring for subsidies, tax breaks, and grants.",
+    title: "WWS puntentelling",
+    paragraph: "Transparante beoordeling van subsidies, belastingvoordelen en subsidies.",
     image: "/WWS-Point-Analysis.avif",
     link: "#contact"
   },
   {
-    title: "Sustainability Advice",
-    paragraph: "Smart, practical solutions to upgrade insulation, tech, and energy use — made for your budget.",
+    title: "Duurzaamheidsadvies",
+    paragraph: "Slimme, praktische oplossingen om isolatie, technologie en energieverbruik te verbeteren, afgestemd op uw budget.",
     image: "/Sustainability-Advice.avif",
     link: "#contact"
   }
@@ -64,20 +64,20 @@ export function ServicesSection() {
               <div className="relative bg-background/50 backdrop-blur-sm rounded-2xl border overflow-hidden border-border h-full flex flex-col justify-between">
                 <div>
                   {/* Image */}
-                  <div className="relative h-44 aspect-video overflow-hidden">
+                  <div className="relative md:h-44 h-52 overflow-hidden">
                     <Image
                       src={service.image}
                       alt={service.title}
                       width={500}
                       height={500}
-                      className="object-cover aspect-video transition-transform duration-500 group-hover:scale-110"
+                      className="object-contain w-full transition-transform duration-500 group-hover:scale-110"
                     />
                   </div>
 
                   {/* Content */}
                   <div className="p-6">
                     <h3 className="text-xl font-semibold mb-2">{service.title}</h3>
-                    <p className="text-foreground/90 mb-4 text-base md:text-xl">{service.paragraph}</p>
+                    <p className="text-foreground/90 mb-4 text-lg">{service.paragraph}</p>
                   </div>
                 </div>
 

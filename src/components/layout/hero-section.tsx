@@ -34,16 +34,16 @@ export function HeroSection() {
               lineHeight: "120%"
             }}
           >
-            Sustainable Energy Labels<br /> Practical Advice<br /> Smarter Homes
+            Duurzame energielabels<br /> Praktisch advies<br /> Slimmere huizen
           </motion.h1>
 
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.4 }}
-            className="text-foreground/90 text-lg md:text-2xl mb-12 max-w-2xl mx-auto"
+            className="text-foreground/90 text-xl md:text-2xl mb-12 max-w-2xl mx-auto"
           >
-            We assess your home’s energy performance and deliver custom solutions in insulation, installations & consumption. Get a greener home — faster, easier, tailored to you.
+            Wij beoordelen de energieprestaties van uw woning en leveren maatwerkoplossingen voor isolatie, installaties en verbruik. Krijg een groener huis – sneller, eenvoudiger en op maat gemaakt.
           </motion.p>
 
           <motion.div
@@ -54,7 +54,7 @@ export function HeroSection() {
           >
             <Link href="#contact">
               <Button size="lg" className="text-base min-w-[250px] h-12">
-                Get Your Energy
+                Vraag direct een offerte aan
               </Button>
             </Link>
           </motion.div>
@@ -75,6 +75,44 @@ export function HeroSection() {
             />
           </motion.div>
         </div>
+      </div>
+
+      <div className="container mx-auto px-4 pb-12 ">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.8 }}
+          className="grid grid-cols-1 md:grid-cols-4 md:gap-3 gap-6 items-center"
+        >
+          <div className="flex items-center gap-3 justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+              <polyline points="22 4 12 14.01 9 11.01" />
+            </svg>
+            <span className="">Energielabel voor woningen</span>
+          </div>
+          <div className="flex items-center gap-3 justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="10" />
+              <polyline points="12 6 12 12 16 14" />
+            </svg>
+            <span className="">NEN 2580 meetrapport</span>
+          </div>
+          <div className="flex items-center gap-3 justify-center md:pl-10">
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
+              <circle cx="12" cy="10" r="3" />
+            </svg>
+            <span className="">WWS puntentelling</span>
+          </div>
+          <div className="flex items-center gap-3 justify-center md:pl-12">
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21 12c0 1.2-4 6-9 6s-9-4.8-9-6c0-1.2 4-6 9-6s9 4.8 9 6Z" />
+              <circle cx="12" cy="12" r="3" />
+            </svg>
+            <span className="">Duurzaamheidsadvies</span>
+          </div>
+        </motion.div>
       </div>
 
     </>

@@ -12,29 +12,29 @@ export default function FAQ() {
 
     const faq: FAQItem[] = [
         {
-            q: "What is an energy label?",
-            a: "It’s a mandatory certificate showing your home’s energy efficiency—required for sale or rent."
+            q: "Wat is een energielabel?",
+            a: "Een energielabel toont hoe energiezuinig een woning is, verplicht bij verkoop/verhuur."
         },
         {
-            q: "How soon will I get it?",
-            a: "You’ll receive all documents within 1–3 business days after inspection. Need it faster? Ask about rush delivery"
+            q: "Hoe snel ontvang ik het label?",
+            a: "Binnen 1-3 werkdagen na woningopname, spoed mogelijk."
         },
         {
-            q: "How much does it cost?",
-            a: "It depends on your property’s type and where you live. Request a free, transparent quote now."
+            q: "Wat kost het?",
+            a: "Afhankelijk van woningtype en locatie. Vraag een offerte aan."
         },
     ];
 
     return (
-        <div className="container mx-auto px-4 py-32">
+        <div id="faq" className="bg-foreground/5 px-4 py-32 ">
             <div className="max-w-4xl mx-auto">
                 {/* FAQ Header */}
                 <div className="text-center mb-16">
                     <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">
-                        Before You Ask
+                        Veelgestelde Vragen
                     </h2>
-                    <p className="text-foreground/90 text-base md:text-xl">
-                        We answer what you’re likely thinking.
+                    <p className="text-foreground/90 text-xl">
+                        We antwoorden op wat je waarschijnlijk denkt.
                     </p>
                 </div>
 
@@ -43,12 +43,12 @@ export default function FAQ() {
                     {faq.map((qa, index) => (
                         <div
                             key={index}
-                            className="border border-border rounded-2xl overflow-hidden bg-background/50 backdrop-blur-sm"
+                            className="border border-border rounded-2xl overflow-hidden bg-background backdrop-blur-sm"
                         >
                             {/* Question Header */}
                             <button
                                 onClick={() => setOpenQuestion(openQuestion === index ? null : index)}
-                                className="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-primary/5 transition-colors"
+                                className="w-full px-6 py-4 flex items-center justify-between text-left"
                             >
                                 <span className="text-lg font-medium">{qa.q}</span>
                                 <span className="text-2xl transform transition-transform duration-200" style={{
