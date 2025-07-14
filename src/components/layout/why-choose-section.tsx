@@ -33,7 +33,7 @@ export default function WhyChooseSection() {
           className=" mb-12"
         >
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-2">
-            Wat ons onderscheidt
+            Waarom kiezen voor
           </h2>
         </motion.div>
 

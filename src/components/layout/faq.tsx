@@ -33,9 +33,6 @@ export default function FAQ() {
                     <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">
                         Veelgestelde Vragen
                     </h2>
-                    <p className="text-foreground/90 text-xl">
-                        We antwoorden op wat je waarschijnlijk denkt.
-                    </p>
                 </div>
 
                 {/* FAQ Questions */}

@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { ContactPopupProvider } from "@/components/providers/contact-popup-provider";
+import SmoothScrolling from "@/components/smooth-scrolling";
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -136,7 +137,7 @@ export default function RootLayout({
                 "@type": "ContactPoint",
                 "telephone": "+31647198116",
                 "contactType": "customer service",
-                "email": "rico@emw-groep.nl",
+                "email": "info@emw-groep.nl",
                 "availableLanguage": ["Dutch"]
               },
               "sameAs": [
@@ -156,8 +157,11 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <ContactPopupProvider>
-            <Header />
-            {children}
+            <SmoothScrolling>
+             
+              <Header />
+              {children}
+            </SmoothScrolling>
             <Footer />
           </ContactPopupProvider>
         </ThemeProvider>

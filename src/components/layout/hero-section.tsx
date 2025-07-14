@@ -9,7 +9,7 @@ import Link from "next/link";
 export function HeroSection() {
   return (
     <>
-      <div id="hero" className="relative mt-20 flex flex-col items-center justify-center overflow-hidden">
+      <div id="hero" className="relative mt-32 flex flex-col items-center justify-center overflow-hidden">
 
         {/* Floating geometric shapes */}
         <FlickeringGrid
@@ -17,7 +17,7 @@ export function HeroSection() {
           squareSize={3}
           gridGap={12}
           color="#929791"
-          maxOpacity={0.5}
+          maxOpacity={0.4}
           flickerChance={0.4}
           height={800}
           width={1600}

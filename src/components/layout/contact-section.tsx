@@ -57,6 +57,11 @@ interface FormData {
     verkoopklaar: boolean;
   };
   
+  // Business Information
+  clientType: "private" | "business" | "";
+  companyName: string;
+  kvkNumber: string;
+  
   // Step 2 - Property Details
   address: string;
   houseType: string;
@@ -67,6 +72,12 @@ interface FormData {
   // Step 3 - Property Condition
   insulationDetails: string;
   sustainableInstallations: string;
+  
+  // Energy Label Information (for Sustainability Advice)
+  hasEnergyLabel: "ja" | "nee" | "";
+  currentEnergyLabel: string;
+  wantsNewLabel: "ja" | "nee" | "";
+  sustainabilityBudget: string;
   
   // Step 4 - Project Details
   purpose: "verkoop" | "verhuur" | "";
@@ -91,6 +102,9 @@ const initialFormData: FormData = {
     isolatieadvies: false,
     verkoopklaar: false,
   },
+  clientType: "",
+  companyName: "",
+  kvkNumber: "",
   address: "",
   houseType: "",
   surfaceArea: "",
@@ -98,6 +112,10 @@ const initialFormData: FormData = {
   recentlyRenovated: "",
   insulationDetails: "",
   sustainableInstallations: "",
+  hasEnergyLabel: "",
+  currentEnergyLabel: "",
+  wantsNewLabel: "",
+  sustainabilityBudget: "",
   purpose: "",
   subsidyRequest: "",
   deadline: "",
@@ -111,7 +129,7 @@ const initialFormData: FormData = {
 const steps = [
   {
     id: "services",
-    title: "Welke diensten wenst u af te nemen?",
+    title: "Welke diensten mogen wij voor u verzorgen?",
   },
   {
     id: "property",
@@ -140,6 +158,9 @@ const houseTypes = [
 
 interface FormErrors {
   services?: string;
+  clientType?: string;
+  companyName?: string;
+  kvkNumber?: string;
   address?: string;
   houseType?: string;
   surfaceArea?: string;
@@ -147,6 +168,10 @@ interface FormErrors {
   recentlyRenovated?: string;
   insulationDetails?: string;
   sustainableInstallations?: string;
+  hasEnergyLabel?: string;
+  currentEnergyLabel?: string;
+  wantsNewLabel?: string;
+  sustainabilityBudget?: string;
   purpose?: string;
   subsidyRequest?: string;
   deadline?: string;
@@ -220,6 +245,13 @@ export function ContactSection() {
         if (!Object.values(formData.serviceTypes).some((value) => value)) {
           newErrors.services = "Selecteer minimaal één service";
         }
+        if (!formData.clientType) {
+          newErrors.clientType = "Selecteer type klant";
+        }
+        if (formData.clientType === "business") {
+          if (!formData.companyName) newErrors.companyName = "Bedrijfsnaam is verplicht";
+          if (!formData.kvkNumber) newErrors.kvkNumber = "KvK-nummer is verplicht";
+        }
         break;
       case 1:
         if (!formData.address.trim()) newErrors.address = "Adres is verplicht";
@@ -229,8 +261,18 @@ export function ContactSection() {
         if (!formData.recentlyRenovated) newErrors.recentlyRenovated = "Selecteer of de woning recent gerenoveerd is";
         break;
       case 2:
-        if (!formData.insulationDetails.trim()) newErrors.insulationDetails = "Beschrijf de huidige isolatie";
-        if (!formData.sustainableInstallations.trim()) newErrors.sustainableInstallations = "Beschrijf de duurzame installaties";
+        // Only validate insulation details if not requesting NEN 2580 or WWS puntentelling
+        if (!formData.serviceTypes.nen2580 && !formData.serviceTypes.wwsPunten) {
+          if (!formData.insulationDetails.trim()) newErrors.insulationDetails = "Beschrijf de huidige isolatie";
+          if (!formData.sustainableInstallations.trim()) newErrors.sustainableInstallations = "Beschrijf de duurzame installaties";
+        }
+        
+        // Additional validation for sustainability advice
+        if (formData.serviceTypes.duurzaamheidsadvies) {
+          if (!formData.hasEnergyLabel) newErrors.hasEnergyLabel = "Geef aan of u een energielabel heeft";
+          if (!formData.wantsNewLabel) newErrors.wantsNewLabel = "Geef aan of u een nieuw label wenst";
+          if (!formData.sustainabilityBudget.trim()) newErrors.sustainabilityBudget = "Geef uw budget aan";
+        }
         break;
       case 3:
         if (!formData.purpose) newErrors.purpose = "Selecteer verkoop of verhuur";
@@ -275,14 +317,76 @@ export function ContactSection() {
       case 0:
         return (
           <div className="space-y-6">
-            <h3 className="text-lg font-medium">Selecteer de gewenste diensten</h3>
+            {/* Client Type Selection */}
+            <div className="space-y-3">
+              <label className="block text-sm font-medium">Type klant *</label>
+              <div className="flex gap-4">
+                <label className="flex items-center space-x-2">
+                  <input
+                    type="radio"
+                    checked={formData.clientType === "private"}
+                    onChange={() => setFormData({ ...formData, clientType: "private" })}
+                    className="h-4 w-4 border-gray-300"
+                  />
+                  <span>Particulier</span>
+                </label>
+                <label className="flex items-center space-x-2">
+                  <input
+                    type="radio"
+                    checked={formData.clientType === "business"}
+                    onChange={() => setFormData({ ...formData, clientType: "business" })}
+                    className="h-4 w-4 border-gray-300"
+                  />
+                  <span>Zakelijk</span>
+                </label>
+              </div>
+              {errors.clientType && (
+                <p className="text-destructive text-sm">{errors.clientType}</p>
+              )}
+            </div>
+
+            {/* Business Information */}
+            {formData.clientType === "business" && (
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium">Bedrijfsnaam *</label>
+                  <Input
+                    value={formData.companyName}
+                    onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
+                    className={errors.companyName ? "border-red-500" : ""}
+                  />
+                  {errors.companyName && (
+                    <p className="text-red-500 text-sm mt-1">{errors.companyName}</p>
+                  )}
+                </div>
+                <div>
+                  <label className="block text-sm font-medium">KvK-nummer *</label>
+                  <Input
+                    value={formData.kvkNumber}
+                    onChange={(e) => setFormData({ ...formData, kvkNumber: e.target.value })}
+                    className={errors.kvkNumber ? "border-red-500" : ""}
+                  />
+                  {errors.kvkNumber && (
+                    <p className="text-red-500 text-sm mt-1">{errors.kvkNumber}</p>
+                  )}
+                </div>
+              </div>
+            )}
+
+            <h3 className="text-lg font-medium">
+              Maak hieronder uw keuze uit de beschikbare opties.
+            </h3>
             <div className="grid gap-4">
               {Object.entries(serviceConfig).map(([key, service]) => (
                 <div key={key} className="flex items-center space-x-2">
                   <input
                     type="checkbox"
                     id={key}
-                    checked={formData.serviceTypes[key as keyof typeof formData.serviceTypes]}
+                    checked={
+                      formData.serviceTypes[
+                        key as keyof typeof formData.serviceTypes
+                      ]
+                    }
                     onChange={(e) =>
                       setFormData({
                         ...formData,
@@ -329,7 +433,10 @@ export function ContactSection() {
               </div>
 
               <div>
-                <label htmlFor="houseType" className="block text-sm font-medium">
+                <label
+                  htmlFor="houseType"
+                  className="block text-sm font-medium"
+                >
                   Type woning
                 </label>
                 <select
@@ -348,12 +455,17 @@ export function ContactSection() {
                   ))}
                 </select>
                 {errors.houseType && (
-                  <p className="mt-1 text-sm text-red-500">{errors.houseType}</p>
+                  <p className="mt-1 text-sm text-red-500">
+                    {errors.houseType}
+                  </p>
                 )}
               </div>
 
               <div>
-                <label htmlFor="surfaceArea" className="block text-sm font-medium">
+                <label
+                  htmlFor="surfaceArea"
+                  className="block text-sm font-medium"
+                >
                   Oppervlakte (m²)
                 </label>
                 <Input
@@ -366,12 +478,17 @@ export function ContactSection() {
                   placeholder="Vul de oppervlakte in"
                 />
                 {errors.surfaceArea && (
-                  <p className="mt-1 text-sm text-red-500">{errors.surfaceArea}</p>
+                  <p className="mt-1 text-sm text-red-500">
+                    {errors.surfaceArea}
+                  </p>
                 )}
               </div>
 
               <div>
-                <label htmlFor="constructionYear" className="block text-sm font-medium">
+                <label
+                  htmlFor="constructionYear"
+                  className="block text-sm font-medium"
+                >
                   Bouwjaar
                 </label>
                 <Input
@@ -379,12 +496,17 @@ export function ContactSection() {
                   type="number"
                   value={formData.constructionYear}
                   onChange={(e) =>
-                    setFormData({ ...formData, constructionYear: e.target.value })
+                    setFormData({
+                      ...formData,
+                      constructionYear: e.target.value,
+                    })
                   }
                   placeholder="Vul het bouwjaar in"
                 />
                 {errors.constructionYear && (
-                  <p className="mt-1 text-sm text-red-500">{errors.constructionYear}</p>
+                  <p className="mt-1 text-sm text-red-500">
+                    {errors.constructionYear}
+                  </p>
                 )}
               </div>
 
@@ -425,7 +547,9 @@ export function ContactSection() {
                   </label>
                 </div>
                 {errors.recentlyRenovated && (
-                  <p className="mt-1 text-sm text-red-500">{errors.recentlyRenovated}</p>
+                  <p className="mt-1 text-sm text-red-500">
+                    {errors.recentlyRenovated}
+                  </p>
                 )}
               </div>
             </div>
@@ -437,44 +561,160 @@ export function ContactSection() {
           <div className="space-y-6">
             <h3 className="text-lg font-medium">Huidige staat van de woning</h3>
             <div className="grid gap-4">
-              <div>
-                <label htmlFor="insulationDetails" className="block text-sm font-medium">
-                  Huidige isolatie
-                </label>
-                <Textarea
-                  id="insulationDetails"
-                  value={formData.insulationDetails}
-                  onChange={(e) =>
-                    setFormData({ ...formData, insulationDetails: e.target.value })
-                  }
-                  placeholder="Beschrijf de huidige isolatie van de woning"
-                  rows={4}
-                />
-                {errors.insulationDetails && (
-                  <p className="mt-1 text-sm text-red-500">{errors.insulationDetails}</p>
-                )}
-              </div>
+              {/* Only show insulation fields if not requesting NEN 2580 or WWS puntentelling */}
+              {!formData.serviceTypes.nen2580 && !formData.serviceTypes.wwsPunten && (
+                <>
+                  <div>
+                    <label htmlFor="insulationDetails" className="block text-sm font-medium">
+                      Huidige isolatie
+                    </label>
+                    <Textarea
+                      id="insulationDetails"
+                      value={formData.insulationDetails}
+                      onChange={(e) =>
+                        setFormData({ ...formData, insulationDetails: e.target.value })
+                      }
+                      placeholder="indien onbekend mag u dit leeg laten"
+                      rows={4}
+                    />
+                    {errors.insulationDetails && (
+                      <p className="mt-1 text-sm text-red-500">{errors.insulationDetails}</p>
+                    )}
+                  </div>
 
-              <div>
-                <label htmlFor="sustainableInstallations" className="block text-sm font-medium">
-                  Duurzame installaties
-                </label>
-                <Textarea
-                  id="sustainableInstallations"
-                  value={formData.sustainableInstallations}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      sustainableInstallations: e.target.value,
-                    })
-                  }
-                  placeholder="Beschrijf de aanwezige duurzame installaties"
-                  rows={4}
-                />
-                {errors.sustainableInstallations && (
-                  <p className="mt-1 text-sm text-red-500">{errors.sustainableInstallations}</p>
-                )}
-              </div>
+                  <div>
+                    <label htmlFor="sustainableInstallations" className="block text-sm font-medium">
+                      Duurzame installaties
+                    </label>
+                    <Textarea
+                      id="sustainableInstallations"
+                      value={formData.sustainableInstallations}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          sustainableInstallations: e.target.value,
+                        })
+                      }
+                      placeholder="indien onbekend mag u dit leeg laten. Denk aan warmtepomp, zonnepanelen, etc etc.."
+                      rows={4}
+                    />
+                    {errors.sustainableInstallations && (
+                      <p className="mt-1 text-sm text-red-500">{errors.sustainableInstallations}</p>
+                    )}
+                  </div>
+                </>
+              )}
+
+              {/* Additional fields for sustainability advice */}
+              {formData.serviceTypes.duurzaamheidsadvies && (
+                <>
+                  <div>
+                    <label className="block text-sm font-medium">Heeft u een geldig energielabel? *</label>
+                    <div className="mt-2 space-x-4">
+                      <label className="inline-flex items-center">
+                        <input
+                          type="radio"
+                          value="ja"
+                          checked={formData.hasEnergyLabel === "ja"}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              hasEnergyLabel: e.target.value as "ja" | "nee",
+                            })
+                          }
+                          className="h-4 w-4 border-gray-300"
+                        />
+                        <span className="ml-2">Ja</span>
+                      </label>
+                      <label className="inline-flex items-center">
+                        <input
+                          type="radio"
+                          value="nee"
+                          checked={formData.hasEnergyLabel === "nee"}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              hasEnergyLabel: e.target.value as "ja" | "nee",
+                            })
+                          }
+                          className="h-4 w-4 border-gray-300"
+                        />
+                        <span className="ml-2">Nee</span>
+                      </label>
+                    </div>
+                    {errors.hasEnergyLabel && (
+                      <p className="mt-1 text-sm text-red-500">{errors.hasEnergyLabel}</p>
+                    )}
+                  </div>
+
+                  {formData.hasEnergyLabel === "ja" && (
+                    <div>
+                      <label className="block text-sm font-medium">Welk energielabel heeft u?</label>
+                      <Input
+                        value={formData.currentEnergyLabel}
+                        onChange={(e) =>
+                          setFormData({ ...formData, currentEnergyLabel: e.target.value })
+                        }
+                        placeholder="Bijv. A, B, C, etc."
+                      />
+                    </div>
+                  )}
+
+                  <div>
+                    <label className="block text-sm font-medium">Wilt u een nieuw energielabel? *</label>
+                    <div className="mt-2 space-x-4">
+                      <label className="inline-flex items-center">
+                        <input
+                          type="radio"
+                          value="ja"
+                          checked={formData.wantsNewLabel === "ja"}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              wantsNewLabel: e.target.value as "ja" | "nee",
+                            })
+                          }
+                          className="h-4 w-4 border-gray-300"
+                        />
+                        <span className="ml-2">Ja</span>
+                      </label>
+                      <label className="inline-flex items-center">
+                        <input
+                          type="radio"
+                          value="nee"
+                          checked={formData.wantsNewLabel === "nee"}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              wantsNewLabel: e.target.value as "ja" | "nee",
+                            })
+                          }
+                          className="h-4 w-4 border-gray-300"
+                        />
+                        <span className="ml-2">Nee</span>
+                      </label>
+                    </div>
+                    {errors.wantsNewLabel && (
+                      <p className="mt-1 text-sm text-red-500">{errors.wantsNewLabel}</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium">Budget voor verduurzaming *</label>
+                    <Input
+                      type="text"
+                      value={formData.sustainabilityBudget}
+                      onChange={(e) =>
+                        setFormData({ ...formData, sustainabilityBudget: e.target.value })
+                      }
+                      placeholder="Bijv. €5.000 - €10.000"
+                    />
+                    {errors.sustainabilityBudget && (
+                      <p className="mt-1 text-sm text-red-500">{errors.sustainabilityBudget}</p>
+                    )}
+                  </div>
+                </>
+              )}
             </div>
           </div>
         );
@@ -560,7 +800,9 @@ export function ContactSection() {
                   </label>
                 </div>
                 {errors.subsidyRequest && (
-                  <p className="mt-1 text-sm text-red-500">{errors.subsidyRequest}</p>
+                  <p className="mt-1 text-sm text-red-500">
+                    {errors.subsidyRequest}
+                  </p>
                 )}
               </div>
 
@@ -612,7 +854,10 @@ export function ContactSection() {
             <h3 className="text-lg font-medium">Uw contactgegevens</h3>
             <div className="grid gap-4">
               <div>
-                <label htmlFor="firstName" className="block text-sm font-medium">
+                <label
+                  htmlFor="firstName"
+                  className="block text-sm font-medium"
+                >
                   Voornaam
                 </label>
                 <Input
@@ -624,7 +869,9 @@ export function ContactSection() {
                   placeholder="Vul uw voornaam in"
                 />
                 {errors.firstName && (
-                  <p className="mt-1 text-sm text-red-500">{errors.firstName}</p>
+                  <p className="mt-1 text-sm text-red-500">
+                    {errors.firstName}
+                  </p>
                 )}
               </div>
 
@@ -682,24 +929,35 @@ export function ContactSection() {
               </div>
 
               <div>
-                <label htmlFor="preferredContactTime" className="block text-sm font-medium">
+                <label
+                  htmlFor="preferredContactTime"
+                  className="block text-sm font-medium"
+                >
                   Voorkeurstijd voor contact
                 </label>
                 <Input
                   id="preferredContactTime"
                   value={formData.preferredContactTime}
                   onChange={(e) =>
-                    setFormData({ ...formData, preferredContactTime: e.target.value })
+                    setFormData({
+                      ...formData,
+                      preferredContactTime: e.target.value,
+                    })
                   }
                   placeholder="Bijv. 's ochtends, 's middags, etc."
                 />
                 {errors.preferredContactTime && (
-                  <p className="mt-1 text-sm text-red-500">{errors.preferredContactTime}</p>
+                  <p className="mt-1 text-sm text-red-500">
+                    {errors.preferredContactTime}
+                  </p>
                 )}
               </div>
 
               <div>
-                <label htmlFor="additionalDocuments" className="block text-sm font-medium">
+                <label
+                  htmlFor="additionalDocuments"
+                  className="block text-sm font-medium"
+                >
                   Extra documenten (optioneel)
                 </label>
                 <Input
@@ -733,7 +991,7 @@ export function ContactSection() {
             <div className="bg-background rounded-xl shadow-lg p-8 border border-border relative">
               {/* Main Title */}
               <h2 className="text-xl font-semibold text-center mb-6">
-                Gratis offerte aanvragen voor de isolatie van uw woning
+                Vrijblijvende offerte aanvragen
               </h2>
 
               {/* Step Indicators */}
@@ -836,7 +1094,7 @@ export function ContactSection() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="space-y-8 lg:sticky lg:top-24 order-2 md:order-1"
+            className="space-y-8 lg:sticky lg:top-36 order-2 md:order-1"
           >
             <div>
               <h2 className="text-4xl font-bold mb-6">
@@ -851,9 +1109,9 @@ export function ContactSection() {
               </h3>
               <ul className="space-y-3">
                 {[
-                   "Snel en compliant",
-                   "Gepersonaliseerde efficiënti",
-                   "End-to-end service",
+                  "Snel en compliant",
+                  "Gepersonaliseerde efficiënti",
+                  "End-to-end service",
                 ].map((item, index) => (
                   <motion.li
                     key={index}
@@ -926,9 +1184,9 @@ export function ContactSection() {
                   </svg>
                 </div>
                 <div>
-                  <Link href="mailto:rico@emw-groep.nl">
+                  <Link href="mailto:info@emw-groep.nl">
                     <h3 className="font-semibold mb-1">Email</h3>
-                    <p className="text-foreground/90">rico@emw-groep.nl</p>
+                    <p className="text-foreground/90">info@emw-groep.nl</p>
                   </Link>
                 </div>
               </div>
