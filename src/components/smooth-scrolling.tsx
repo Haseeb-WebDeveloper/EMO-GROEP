@@ -1,22 +1,16 @@
 "use client";
-import { ReactLenis } from "@studio-freight/react-lenis";
-import { ReactNode, useEffect } from "react";
+import { ReactLenis } from "lenis/react";
+import { ReactNode } from "react";
 
 function SmoothScrolling({ children }: { children: ReactNode }) {
-
-  useEffect(() => {
-    document.body.classList.remove('transition-link');
-  }, []);
-
-
   return (
     <ReactLenis 
       root 
       options={{ 
-        lerp: 0.09, // Reduced for smoother interpolation
-        smoothWheel: true, // Enable smooth mouse wheel scrolling
-        duration: 1, // Increased for longer, smoother animations
-        easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) // Custom easing function for smoother motion
+        lerp: 0.02,
+        smoothWheel: true,
+        duration: 1,
+        easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t))
       }}
     >
       <div className="lenis-wrapper">

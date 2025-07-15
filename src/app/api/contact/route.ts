@@ -12,6 +12,11 @@ interface FormData {
     verkoopklaar: boolean;
   };
   
+  // Business Information
+  clientType: "private" | "business" | "";
+  companyName: string;
+  kvkNumber: string;
+  
   // Step 2 - Property Details
   address: string;
   houseType: string;
@@ -22,6 +27,12 @@ interface FormData {
   // Step 3 - Property Condition
   insulationDetails: string;
   sustainableInstallations: string;
+  
+  // Energy Label Information (for Sustainability Advice)
+  hasEnergyLabel: "ja" | "nee" | "";
+  currentEnergyLabel: string;
+  wantsNewLabel: "ja" | "nee" | "";
+  sustainabilityBudget: string;
   
   // Step 4 - Project Details
   purpose: "verkoop" | "verhuur" | "";
@@ -95,6 +106,15 @@ export async function POST(req: Request) {
           </div>
 
           <div style="margin: 20px 0; padding: 15px; background: #f9f9f9; border-radius: 5px;">
+            <h3 style="color: #666; margin-top: 0;">Type klant:</h3>
+            <p>Type: ${data.clientType === 'business' ? 'Zakelijk' : 'Particulier'}</p>
+            ${data.clientType === 'business' ? `
+              <p>Bedrijfsnaam: ${data.companyName}</p>
+              <p>KvK-nummer: ${data.kvkNumber}</p>
+            ` : ''}
+          </div>
+
+          <div style="margin: 20px 0; padding: 15px; background: #f9f9f9; border-radius: 5px;">
             <h3 style="color: #666; margin-top: 0;">Gegevens van de woning:</h3>
             <p>Adres: ${data.address}</p>
             <p>Type woning: ${data.houseType}</p>
@@ -105,8 +125,15 @@ export async function POST(req: Request) {
 
           <div style="margin: 20px 0; padding: 15px; background: #f9f9f9; border-radius: 5px;">
             <h3 style="color: #666; margin-top: 0;">Huidige staat van de woning:</h3>
-            <p>Isolatie details: ${data.insulationDetails}</p>
-            <p>Duurzame installaties: ${data.sustainableInstallations}</p>
+            <p>Isolatie details: ${data.insulationDetails || 'Niet opgegeven'}</p>
+            <p>Duurzame installaties: ${data.sustainableInstallations || 'Niet opgegeven'}</p>
+            ${data.serviceTypes.duurzaamheidsadvies ? `
+              <h4 style="color: #666; margin-top: 15px;">Energielabel informatie:</h4>
+              <p>Heeft energielabel: ${data.hasEnergyLabel}</p>
+              ${data.hasEnergyLabel === 'ja' ? `<p>Huidig energielabel: ${data.currentEnergyLabel}</p>` : ''}
+              <p>Wil nieuw energielabel: ${data.wantsNewLabel}</p>
+              <p>Budget voor verduurzaming: ${data.sustainabilityBudget}</p>
+            ` : ''}
           </div>
 
           <div style="margin: 20px 0; padding: 15px; background: #f9f9f9; border-radius: 5px;">
@@ -121,7 +148,7 @@ export async function POST(req: Request) {
             <p>Naam: ${data.firstName} ${data.lastName}</p>
             <p>Email: ${data.email}</p>
             <p>Telefoon: ${data.phone}</p>
-            <p>Voorkeurstijd voor contact: ${data.preferredContactTime}</p>
+            <p>Voorkeurstijd voor contact: ${data.preferredContactTime || 'Niet opgegeven'}</p>
           </div>
         </div>
       `
@@ -148,7 +175,7 @@ export async function POST(req: Request) {
             <p>${selectedServices}</p>
           </div>
           
-          <p>We nemen binnen 24-48 uur contact met u op om uw aanvraag te bespreken.</p>
+          <p>We nemen binnen ${data.deadline === 'spoed' ? '24' : '24-48'} uur contact met u op om uw aanvraag te bespreken.</p>
           
           <p>Met vriendelijke groet,<br>Team EMW Groep</p>
         </div>
