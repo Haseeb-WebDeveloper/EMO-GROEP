@@ -44,7 +44,7 @@ export function ServicesSection() {
           transition={{ duration: 0.5 }}
           className="text-center max-w-2xl mx-auto mb-8"
         >
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">
+          <h2 className="text-4xl md:text-5xl   font-bold mb-4">
             What We Offer
           </h2>
         </motion.div>

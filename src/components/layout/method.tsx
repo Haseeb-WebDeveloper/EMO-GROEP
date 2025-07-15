@@ -48,7 +48,7 @@ export function HowWeWork() {
                     className="space-y-12"
                 >
                     <div className="space-y-6">
-                        <h2 className="text-4xl md:text-5xl lg:text-6xl font-semibold">
+                        <h2 className="text-4xl md:text-5xl   font-semibold">
                             Onze werkwijze
                         </h2>
                     </div>

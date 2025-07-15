@@ -6,17 +6,20 @@ import { TrainFront, Goal, Workflow } from "lucide-react";
 const features = [
   {
     title: "Snel en compliant",
-    description: "Verplicht te koop of te huur? Wij regelen het hele labelproces in slechts 1-3 werkdagen.",
+    description:
+      "Verplicht te koop of te huur? Wij regelen het hele labelproces in slechts 1-3 werkdagen.",
     icon: <TrainFront className="w-16 h-16 text-primary" />,
   },
   {
     title: "Gepersonaliseerde efficiënti",
-    description: "Deskundig advies dat past bij uw huis en levensstijl – geen algemene checklists.",
+    description:
+      "Deskundig advies dat past bij uw huis en levensstijl – geen algemene checklists.",
     icon: <Goal className="w-16 h-16 text-primary" />,
   },
   {
     title: "End-to-end service",
-    description: "Van inspectie & NEN 2580 meting tot heldere duurzaamheidsactieplannen.",
+    description:
+      "Van inspectie & NEN 2580 meting tot heldere duurzaamheidsactieplannen.",
     icon: <Workflow className="w-16 h-16 text-primary" />,
   },
 ];
@@ -32,8 +35,8 @@ export default function WhyChooseSection() {
           transition={{ duration: 0.5 }}
           className=" mb-12"
         >
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-2">
-            Waarom kiezen voor
+          <h2 className="text-4xl md:text-5xl font-bold mb-2">
+            Waarom kiezen voor EMW Groep?
           </h2>
         </motion.div>
 
@@ -53,10 +56,13 @@ export default function WhyChooseSection() {
                   <div className="mb-10 inline-flex items-center justify-center">
                     {feature.icon}
                   </div>
-                  <h3 className="text-2xl font-semibold mb-3">{feature.title}</h3>
-                  <p className="text-foreground/90 text-xl">{feature.description}</p>
+                  <h3 className="text-2xl font-semibold mb-3">
+                    {feature.title}
+                  </h3>
+                  <p className="text-foreground/90 text-xl">
+                    {feature.description}
+                  </p>
                 </div>
-
               </div>
             </motion.div>
           ))}

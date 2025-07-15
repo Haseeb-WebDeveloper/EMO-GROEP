@@ -30,7 +30,7 @@ export default function FAQ() {
             <div className="max-w-4xl mx-auto">
                 {/* FAQ Header */}
                 <div className="text-center mb-16">
-                    <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">
+                    <h2 className="text-4xl md:text-5xl  font-bold mb-4">
                         Veelgestelde Vragen
                     </h2>
                 </div>
