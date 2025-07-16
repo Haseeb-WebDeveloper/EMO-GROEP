@@ -5,6 +5,7 @@ import { HowWeWork } from "@/components/layout/method";
 import FAQ from "@/components/layout/faq";
 import { ContactSection } from "@/components/layout/contact-section";
 import { SustainabilitySection } from "@/components/layout/sustainability-section";
+import { ParallaxImage } from "@/components/ui/ParallaxImage";
 
 export default function Home() {
   return (
@@ -14,6 +15,13 @@ export default function Home() {
       <ServicesSection />
       <WhyChooseSection />
       <HowWeWork />
+      <div className="relative h-screen">
+        <ParallaxImage
+          src="/office.jpg"
+          alt="Hero Section"
+          className="w-full h-full"
+        />
+      </div>
       <FAQ />
       <ContactSection />
     </main>

@@ -2,6 +2,9 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
+import { ParallaxImage } from "../ui/ParallaxImage";
+import { Button } from "../ui/button";
+import Link from "next/link";
 
 export function SustainabilitySection() {
   return (
@@ -66,6 +69,20 @@ export function SustainabilitySection() {
                   </motion.div>
                 ))}
               </div>
+
+              {/* CTA */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.6 }}
+                className="flex flex-col sm:flex-row gap-4 pt-4"
+              >
+                <Link href="#contact">
+                  <Button size="lg" className="text-base min-w-[250px] h-12">
+                    Vraag direct een offerte aan
+                  </Button>
+                </Link>
+              </motion.div>
             </motion.div>
 
             {/* Right Column - Image */}
@@ -74,15 +91,13 @@ export function SustainabilitySection() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="relative h-[420px] rounded-md overflow-hidden"
+              className="relative h-[500px] rounded-md overflow-hidden"
             >
-              <Image
-                src="/advice.png"
-                alt="Duurzaamheid en Energielabel"
-                fill
-                className="object-cover"
-                sizes="(max-width: 768px) 100vw, 50vw"
-                priority
+              <ParallaxImage
+                className="w-full mx-auto rounded-[1rem] lg:rounded-none"
+                src="/advice.webp"
+                alt="Modern construction project"
+                fill={true}
               />
               {/* Gradient Overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />

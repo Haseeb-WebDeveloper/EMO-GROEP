@@ -69,12 +69,20 @@ export function Header() {
 
   const navItems = [
     {
-      label: "Services",
+      label: "What We Offer",
       href: "#services",
     },
     {
-      label: "FAQ",
+      label: "Why Us",
+      href: "#services",
+    },
+    {
+      label: "FAQs",
       href: "#faq",
+    },
+    {
+      label: "Contact Us",
+      href: "#contact",
     },
   ];
 
@@ -86,7 +94,7 @@ export function Header() {
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled || isMobileMenuOpen
           ? "bg-background/80 backdrop-blur-xl shadow-sm"
-          : "bg-transparent"
+          : "bg-foreground/5"
       }`}
     >
       {/* Announcement Bar */}
@@ -136,7 +144,7 @@ export function Header() {
           {/* Logo */}
           <Link href="#hero" className="flex items-center justify-start gap-2">
             <Image
-              src="/logo.jpg"
+              src="/logo.png"
               alt="Logo"
               width={600}
               height={600}
@@ -155,7 +163,7 @@ export function Header() {
               <Link
                 key={item.label}
                 href={item.href}
-                className={`relative group text-lg font-semibold pr-6 bg-foreground/5 px-4 py-1 `}
+                className={`relative group text-lg font-semibold pr-6 px-4 py-1 `}
               >
                 {item.label}
               </Link>

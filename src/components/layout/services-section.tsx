@@ -4,37 +4,45 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { ParallaxImage } from "../ui/ParallaxImage";
 
 const services = [
   {
     title: "Energielabel voor woningen",
-    paragraph: "Snelle, conforme rapportage over energielabels: ideaal voor verkoop of verhuur.",
+    paragraph:
+      "Wij verzorgen het verplichte energielabel voor de verkoop of verhuur van uw woning. Onze gecertificeerde adviseurs zorgen voor een snelle en nauwkeurige opstelling van het energielabel woning volgens de geldende normen.",
     image: "/Energy-Label.avif",
-    link: "#contact"
+    link: "#contact",
   },
   {
     title: "NEN 2580 meetrapport",
-    paragraph: "Nauwkeurige meting van de woonoppervlakte door gecertificeerde taxateurs.",
+    paragraph:
+      "Een officieel NEN 2580 meetrapport voor het bepalen van de gebruiksoppervlakte van uw woning, belangrijk bij de verkoop of verhuur van vastgoed of bij een woningsplitsing.",
     image: "/NEN-2580-Measurement.avif",
-    link: "#contact"
+    link: "#contact",
   },
   {
     title: "WWS puntentelling",
-    paragraph: "Transparante beoordeling van subsidies, belastingvoordelen en subsidies.",
+    paragraph:
+      "Wij voeren de puntentelling volgens het WWS (Woningwaarderingsstelsel) uit om de maximale huurprijs van uw woning te bepalen. Dit is essentieel voor het bepalen van de huurberekening in zowel de sociale als vrije sector.",
     image: "/WWS-Point-Analysis.avif",
-    link: "#contact"
+    link: "#contact",
   },
   {
     title: "Duurzaamheidsadvies",
-    paragraph: "Slimme, praktische oplossingen om isolatie, technologie en energieverbruik te verbeteren, afgestemd op uw budget.",
+    paragraph:
+      "Slimme, praktische oplossingen om isolatie, technologie en energieverbruik te verbeteren, afgestemd op uw budget",
     image: "/Sustainability-Advice.avif",
-    link: "#contact"
-  }
+    link: "#contact",
+  },
 ];
 
 export function ServicesSection() {
   return (
-    <section id="services" className="relative py-20 overflow-hidden bg-foreground/5">
+    <section
+      id="services"
+      className="relative py-20 overflow-hidden bg-foreground/5"
+    >
       <div className="container relative mx-auto px-4">
         {/* Section Header */}
         <motion.div
@@ -42,11 +50,19 @@ export function ServicesSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="text-center max-w-2xl mx-auto mb-8"
+          className="text-center max-w-2xl mx-auto mb-12 space-y-4"
         >
-          <h2 className="text-4xl md:text-5xl   font-bold mb-4">
-            What We Offer
+          <h2 className="text-4xl md:text-5xl   font-bold">
+            Onze diensten
           </h2>
+          <p className="text-foreground/90 text-lg text-pretty">
+            Bij EMW Groep bieden wij een breed scala aan diensten die uw woning
+            verduurzamen en helpen bij het verkrijgen van noodzakelijke
+            rapportages voor verkoop of verhuur. Hieronder vindt u een overzicht
+            van onze <strong>energieadviesdiensten</strong>, allemaal gericht op
+            het verbeteren van uw <strong>energielabel</strong> en het verhogen
+            van de <strong>energie-efficiëntie van uw woning</strong>:
+          </p>
         </motion.div>
 
         {/* Services Grid */}
@@ -65,19 +81,21 @@ export function ServicesSection() {
                 <div>
                   {/* Image */}
                   <div className="relative md:h-44 h-52 overflow-hidden">
-                    <Image
+                    <ParallaxImage
                       src={service.image}
                       alt={service.title}
-                      width={500}
-                      height={500}
-                      className="object-contain w-full transition-transform duration-500 group-hover:scale-110"
+                      className="object-contain w-full transition-transform duration-500"
                     />
                   </div>
 
                   {/* Content */}
                   <div className="p-6">
-                    <h3 className="text-xl font-semibold mb-2">{service.title}</h3>
-                    <p className="text-foreground/90 mb-4 text-lg">{service.paragraph}</p>
+                    <h3 className="text-xl font-semibold mb-2">
+                      {service.title}
+                    </h3>
+                    <p className="text-foreground/90 mb-4 text-md">
+                      {service.paragraph}
+                    </p>
                   </div>
                 </div>
 

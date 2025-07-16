@@ -5,6 +5,7 @@ import { FlickeringGrid } from "@/components/layout/background";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
+import { ParallaxImage } from "../ui/ParallaxImage";
 
 export function HeroSection() {
   return (
@@ -71,13 +72,11 @@ export function HeroSection() {
             transition={{ duration: 0.7, delay: 0.5 }}
             className="relative h-[300px] md:h-[400px] mx-auto rounded-2xl overflow-hidden border border-foreground/20"
           >
-            <Image
+            <ParallaxImage
+              className="w-full mx-auto rounded-[1rem] lg:rounded-none"
               src="/Banner.jpg"
               alt="Modern construction project"
-              fill
-              className="object-cover object-center hover:scale-105 transition-transform duration-700"
-              quality={100}
-              priority
+              fill={true}
             />
           </motion.div>
         </div>

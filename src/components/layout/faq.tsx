@@ -54,7 +54,7 @@ export default function FAQ() {
     ];
 
     return (
-        <div id="faq" className="bg-foreground/5 px-4 py-32 ">
+        <div id="faq" className="px-4 py-32 ">
             <div className="max-w-4xl mx-auto">
                 {/* FAQ Header */}
                 <div className="text-center mb-16">
@@ -64,11 +64,11 @@ export default function FAQ() {
                 </div>
 
                 {/* FAQ Questions */}
-                <div className="space-y-4">
+                <div className="space-y-3">
                     {faq.map((qa, index) => (
                         <div
                             key={index}
-                            className="border border-border rounded-2xl overflow-hidden bg-background backdrop-blur-sm"
+                            className="border border-border rounded-2xl overflow-hidden bg-foreground/[0.05]"
                         >
                             {/* Question Header */}
                             <button
@@ -91,7 +91,7 @@ export default function FAQ() {
                                     opacity: openQuestion === index ? 1 : 0
                                 }}
                             >
-                                <div className="px-6 py-4 border-t border-border bg-primary/5">
+                                <div className="px-6 py-4 border-t border-border bg-primary/[0.02]">
                                     <p className="text-lg">{qa.a}</p>
                                 </div>
                             </div>
