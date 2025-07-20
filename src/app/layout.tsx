@@ -14,12 +14,13 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://emw-groep.nl'),
+  metadataBase: new URL("https://emw-groep.nl"),
   title: {
     default: "EMW Groep | Energielabel & Duurzaamheidsadvies",
-    template: "%s | EMW Groep"
+    template: "%s | EMW Groep",
   },
-  description: "EMW Groep biedt professionele diensten voor energielabels, NEN 2580 meetrapporten, WWS puntentelling en duurzaamheidsadvies. Maak uw woning energiezuinig en verhoog de waarde.",
+  description:
+    "EMW Groep biedt professionele diensten voor energielabels, NEN 2580 meetrapporten, WWS puntentelling en duurzaamheidsadvies. Maak uw woning energiezuinig en verhoog de waarde.",
   keywords: [
     "energielabel",
     "NEN 2580",
@@ -30,7 +31,7 @@ export const metadata: Metadata = {
     "energiezuinig",
     "duurzaam wonen",
     "woningwaarde",
-    "energiebesparing"
+    "energiebesparing",
   ],
   authors: [{ name: "EMW Groep" }],
   creator: "EMW Groep",
@@ -46,7 +47,8 @@ export const metadata: Metadata = {
     url: "https://emw-groep.nl",
     siteName: "EMW Groep",
     title: "EMW Groep | Energielabel & Duurzaamheidsadvies",
-    description: "EMW Groep biedt professionele diensten voor energielabels, NEN 2580 meetrapporten, WWS puntentelling en duurzaamheidsadvies. Maak uw woning energiezuinig en verhoog de waarde.",
+    description:
+      "EMW Groep biedt professionele diensten voor energielabels, NEN 2580 meetrapporten, WWS puntentelling en duurzaamheidsadvies. Maak uw woning energiezuinig en verhoog de waarde.",
     images: [
       {
         url: "/logo.jpg",
@@ -59,7 +61,8 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "EMW Groep | Energielabel & Duurzaamheidsadvies",
-    description: "EMW Groep biedt professionele diensten voor energielabels, NEN 2580 meetrapporten, WWS puntentelling en duurzaamheidsadvies.",
+    description:
+      "EMW Groep biedt professionele diensten voor energielabels, NEN 2580 meetrapporten, WWS puntentelling en duurzaamheidsadvies.",
     images: ["/logo.jpg"],
     creator: "@emwgroep",
   },
@@ -69,9 +72,9 @@ export const metadata: Metadata = {
     googleBot: {
       index: true,
       follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
     },
   },
   icons: {
@@ -92,7 +95,7 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "https://emw-groep.nl",
     languages: {
-      'nl-NL': 'https://emw-groep.nl',
+      "nl-NL": "https://emw-groep.nl",
     },
   },
 };
@@ -109,7 +112,7 @@ export default function RootLayout({
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="theme-color" content="#ffffff" />
         {/* <meta name="google-site-verification" content="KTIrD1tKvxTnnR2CZg0TSFbMUsRcV7QhLOJZVjtOCW4" /> */}
-        
+
         {/* Google Tag (gtag.js) */}
         {/* <script async src="https://www.googletagmanager.com/gtag/js?id=G-XTXBG1FJX6"></script>
         <script
@@ -130,22 +133,22 @@ export default function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "Organization",
-              "name": "EMW Groep",
-              "url": "https://emw-groep.nl",
-              "logo": "https://emw-groep.nl/logo.png",
-              "contactPoint": {
+              name: "EMW Groep",
+              url: "https://emw-groep.nl",
+              logo: "https://emw-groep.nl/logo.png",
+              contactPoint: {
                 "@type": "ContactPoint",
-                "telephone": "+31647198116",
-                "contactType": "customer service",
-                "email": "info@emw-groep.nl",
-                "availableLanguage": ["Dutch"]
+                telephone: "+31647198116",
+                contactType: "customer service",
+                email: "info@emw-groep.nl",
+                availableLanguage: ["Dutch"],
               },
-              "sameAs": [
+              sameAs: [
                 "https://www.facebook.com/emwgroep",
                 "https://www.linkedin.com/company/emw-groep",
-                "https://twitter.com/emwgroep"
-              ]
-            })
+                "https://twitter.com/emwgroep",
+              ],
+            }),
           }}
         />
       </head>
@@ -158,7 +161,6 @@ export default function RootLayout({
         >
           <ContactPopupProvider>
             <SmoothScrolling>
-             
               <Header />
               {children}
             </SmoothScrolling>
