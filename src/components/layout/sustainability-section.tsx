@@ -8,7 +8,7 @@ import Link from "next/link";
 
 export function SustainabilitySection() {
   return (
-    <section className="pb-24 pt-16 bg-background relative overflow-hidden">
+    <section id="about" className="pb-24 pt-16 bg-background relative overflow-hidden">
       <div className="container mx-auto px-4 bg-background">
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -38,7 +38,7 @@ export function SustainabilitySection() {
               {/* Feature List */}
               <div className="space-y-4 pt-6">
                 {[
-                  "Professionele energielabel certificering",
+                  "Professionele energielabel certificering for gecertificeerd volgens brl 9500",
                   "Persoonlijk advies voor woningverbetering",
                   "Expertise in duurzame oplossingen",
                 ].map((feature, index) => (

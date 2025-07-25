@@ -83,7 +83,7 @@ export function HowWeWork() {
                     transition={{ delay: index * 0.1 }}
                     className="relative"
                   >
-                    <div className="p-6 rounded-xl border border-primary/10 bg-background flex gap-6 w-full hover:border-primary/40 transition-all duration-300">
+                    <div className="p-6 rounded-xl border border-primary/10 bg-background flex flex-col md:flex-row gap-6 w-full hover:border-primary/40 transition-all duration-300">
                       {/* Step number circle */}
                       <div className="flex-shrink-0 relative">
                         <div className="w-[90px] h-[90px] rounded-full bg-primary/5 flex items-center justify-center border-2 border-primary relative z-10">

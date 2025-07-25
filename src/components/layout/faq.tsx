@@ -13,7 +13,7 @@ export default function FAQ() {
     const faq: FAQItem[] = [
         {
             q: "Wat is een energielabel en waarom heb ik het nodig?",
-            a: "Een energielabel geeft de energieprestatie van uw woning aan, van A++ (zeer energiezuinig) tot G (zeer energieonzuinig). Bij de verkoop of verhuur van een woning is het verplicht om een energielabel te overleggen. Het label helpt kopers en huurders om inzicht te krijgen in de energie-efficiëntie van de woning."
+            a: "Een energielabel geeft de energieprestatie van uw woning aan, van A++++ (zeer energiezuinig) tot G (zeer energieonzuinig). Bij de verkoop of verhuur van een woning is het verplicht om een energielabel te overleggen. Het label helpt kopers en huurders om inzicht te krijgen in de energie-efficiëntie van de woning."
         },
         {
             q: "Hoe krijg ik een energielabel voor mijn woning?", 
@@ -41,7 +41,7 @@ export default function FAQ() {
         },
         {
             q: "Hoe snel kan ik mijn energielabel ontvangen?",
-            a: "De opname voor het energielabel kan meestal binnen enkele dagen worden ingepland. Na de opname ontvangt u het energielabel doorgaans binnen 1-3 werkdagen."
+            a: "De opname voor het energielabel kan meestal binnen enkele dagen worden ingepland. Na de opname ontvangt u het energielabel doorgaans binnen 3-5 werkdagen."
         },
         {
             q: "Wat kost een energielabel voor mijn woning?",
@@ -87,7 +87,7 @@ export default function FAQ() {
                             <div
                                 className="overflow-hidden transition-all duration-200"
                                 style={{
-                                    maxHeight: openQuestion === index ? '200px' : '0',
+                                    maxHeight: openQuestion === index ? '400px' : '0',
                                     opacity: openQuestion === index ? 1 : 0
                                 }}
                             >

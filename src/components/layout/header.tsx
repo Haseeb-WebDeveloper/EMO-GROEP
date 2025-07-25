@@ -69,19 +69,19 @@ export function Header() {
 
   const navItems = [
     {
-      label: "What We Offer",
+      label: "Wat we bieden",
       href: "#services",
     },
     {
-      label: "Why Us",
-      href: "#services",
+      label: "Over ons",
+      href: "#about",
     },
     {
-      label: "FAQs",
+      label: "Veelgestelde vragen",
       href: "#faq",
     },
     {
-      label: "Contact Us",
+      label: "Contact",
       href: "#contact",
     },
   ];
@@ -186,9 +186,9 @@ export function Header() {
               aria-label="Toggle menu"
             >
               {!isMobileMenuOpen ? (
-                <Menu className="h-10 w-10" />
+                <Menu className="h-8 w-8" />
               ) : (
-                <X className="h-10 w-10" />
+                <X className="h-8 w-8" />
               )}
             </button>
           </div>
@@ -202,7 +202,7 @@ export function Header() {
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3 }}
-              className="md:hidden border-t border-primary/10 min-h-[93dvh] pb-12 flex flex-col justify-between"
+              className="md:hidden border-t border-primary/10 min-h-[calc(100dvh-100px)] pb-12 flex flex-col justify-between"
             >
               <div className="py-12 space-y-8">
                 {navItems.map((item) => (
