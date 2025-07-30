@@ -210,6 +210,7 @@ export function Header() {
                     key={item.label}
                     href={item.href}
                     className="block text-xl text-center"
+                    onClick={(e) => handleNavClick(e, item.href)}
                   >
                     {item.label}
                   </Link>
